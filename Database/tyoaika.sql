@@ -1,0 +1,120 @@
+--
+-- Tarkastetaan, onko kanta jo olemassa.
+--
+DROP DATABASE IF EXISTS tyoaika;
+
+--
+-- Luodaan kanta, jos sitä ei ole.
+--
+CREATE DATABASE IF NOT EXISTS tyoaika;
+
+--
+-- Otetaan kanta käyttöön, että tulevat toimenpiteet onnistuvat.
+-- 
+USE tyoaika;
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+02:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `tyoaika`
+--
+
+
+--
+-- Luodaan tyontekijat-taulu
+--
+DROP TABLE IF EXISTS `tyontekijat`;
+
+CREATE TABLE `tyontekijat` (
+  `tyontekijaID` INT(11) NOT NULL AUTO_INCREMENT,
+  `nimi` VARCHAR(50) NOT NULL,
+   PRIMARY KEY (`tyontekijaID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Luodaan projektit-taulu
+--
+DROP TABLE IF EXISTS `projektit`;
+
+CREATE TABLE `projektit` (
+  `projektiID` INT(11) NOT NULL AUTO_INCREMENT,
+  `tyonteID` INT(11) NOT NULL,
+  `nimi` VARCHAR(30) NOT NULL,
+  PRIMARY KEY (`projektiID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Luodaan tyoajat-taulu.
+--
+DROP TABLE IF EXISTS `tyoajat`;
+
+CREATE TABLE `tyoajat` (
+  `tyoaikaID` INT(11) NOT NULL AUTO_INCREMENT,
+  `tyoteID` INT(11) NOT NULL,
+  `proID` INT(11) NOT NULL,
+  `aloitus` DATETIME NOT NULL,
+  `lopetus` DATETIME NOT NULL,
+   PRIMARY KEY (`tyoaikaID`, `proid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--
+-- Luodaan relaatiot taulujen välille.
+--
+ALTER TABLE `tyoajat`
+  ADD CONSTRAINT `tyontekijat_tyoajat` FOREIGN KEY (`tyoteID`) REFERENCES `tyontekijat` (`tyontekijaID`),
+  ADD CONSTRAINT `projektit_tyoajat` FOREIGN KEY (`proID`) REFERENCES `projektit` (`projektiID`);
+  
+  
+--
+-- Luodaan relaatiot taulujen välille.
+--
+ALTER TABLE `projektit`
+  ADD CONSTRAINT `tyontekijat_projektit` FOREIGN KEY (`tyonteID`) REFERENCES `tyontekijat` (`tyontekijaID`);
+
+ --
+-- Lisätään tyontekijat-tauluun dataa.
+--
+ INSERT INTO `tyontekijat` (`tyontekijaID`, `nimi`) VALUES
+ (1, 'Matti Mikkonen'),
+ (2, 'Pete Hassinen'),
+ (3, 'Pete Kauppinen'),
+ (4, 'Jiri Liimanäppi'),
+ (5, 'Miihkali Suurmankeli'),
+ (6, 'Kumi Rääkkynen'),
+ (7, 'Takuma Sato');
+
+--
+-- Lisätään projektit-tauluun dataa.
+--
+ INSERT INTO `projektit` (`projektiID`, `tyonteID`, `nimi`) VALUES
+ (1, 2, 'Ydinlaskeuman siivous'),
+ (2, 5, 'Papattikaupan kehitys'),
+ (3, 1, 'Operation X'),
+ (4, 4, 'Operation Ripper'),
+ (5, 6, 'Pappatunturin korjaus'),
+ (6, 7, 'The Great Theft'),
+ (7, 3, 'Kuulento');
+
+ 
+
+
+
+
+COMMIT;
+
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
