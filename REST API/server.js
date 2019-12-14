@@ -3,7 +3,7 @@ var express = require('express');
 var app=express();
 var fs = require('fs');
 var bodyParser = require('body-parser');
-var customerController = require('./controller');
+var controller = require('./controller');
 var cookieParser = require('cookie-parser');
 const http = require('http');
 const url = require('url');
@@ -46,24 +46,24 @@ app.use(cookieParser());
 // app.use(express.static('public'));
 
 
-// REST API Asiakas
-app.route('/Types')
-    .get(customerController.fetchTypes);
+// REST API tyoaika
+app.route('/projects')
+    .get(controller.fetchProjects);
 
 
 app.route('/login')
-    .post(customerController.login);
+    .post(controller.login);
    
 
 
 
-app.route('/Asiakas')
-    .get(customerController.fetchAll)
-    .post(customerController.create);
+app.route('/workers')
+    .get(controller.fetchWorkers)
+    .post(controller.create);
 
 app.route('/Asiakas/:id')
-    .put(customerController.update)
-    .delete(customerController.delete);
+    .put(controller.update)
+    .delete(controller.delete);
 
 
 app.get('/getuser', (req, res) => {
