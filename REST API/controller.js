@@ -16,8 +16,16 @@ let users = {
 
 module.exports =
     {
+        // Hakee kaikki projektit, jos parametrien arvot ovat tyhjiä. Mikäli eivät ole, rajataan vastaanotettujen
+        // arvojen perusteella.
         fetchProjects: function (req, res) {
-            connection.query('SELECT * FROM projektit', function (error, results, fields) {
+            if (req.query.projektiID == "") {
+                sqlQuery = "SELECT * FROM projektit";
+            }
+            else {
+                sqlQuery = "SELECT * FROM projektit WHERE projektiID LIKE '" + req.query.projektiID + "%' ";
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa projektit-taulusta, syy: " + error);
                     //res.send(error);
@@ -42,7 +50,7 @@ module.exports =
         response.redirect("/");
     },
 
-        //Haetaan kaikki työntekijät, tai jos tulee parametreja, niin haetaan niiden perusteella
+        //Hakee kaikki työntekijät, tai jos tulee parametreja, haetaan niiden perusteella
         fetchWorkers: function (req, res) {
             if (req.query.nimi == "" && req.query.tyontekijaID == "") {
                 sqlQuery = "SELECT * FROM tyontekijat";
@@ -54,6 +62,34 @@ module.exports =
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa tyontekijat-taulusta, syy: " + error);
+                    //res.send(error);
+                    //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));
+                    res.json(results);
+                    //res.statusCode = 201;
+                    //res.send(results);
+                    //res.send({ "status": 768, "error": null, "response": results });
+                }
+            });
+        },
+
+        //Hakee kaikki kellotetut työajat, tai jos tulee parametreja, haetaan niiden perusteella
+        fetchTimes: function (req, res) {
+            if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID == "" && req.query.aloitus == ""
+            && req.query.lopetus == "") {
+                sqlQuery = "SELECT * FROM tyoajat";
+            }
+            else {
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoaikaID LIKE '" + req.query.tyoaikaID + "%' " +
+                    "AND tyoteID LIKE '" + req.query.tyoteID + "%' " + "AND proID LIKE '" + req.query.proID + "%' ";
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
                     //res.send(error);
                     //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
                     res.send({ "status": 500, "error": error, "response": null });

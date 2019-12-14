@@ -55,10 +55,12 @@ app.route('/login')
     .post(controller.login);
    
 
-
-
 app.route('/workers')
     .get(controller.fetchWorkers)
+    .post(controller.create);
+
+app.route('/times')
+    .get(controller.fetchTimes)
     .post(controller.create);
 
 app.route('/Asiakas/:id')
