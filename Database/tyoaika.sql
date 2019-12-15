@@ -76,11 +76,7 @@ ALTER TABLE `tyoajat`
   ADD CONSTRAINT `projektit_tyoajat` FOREIGN KEY (`proID`) REFERENCES `projektit` (`projektiID`);
   
   
---
--- Luodaan relaatiot taulujen välille.
---
-ALTER TABLE `projektit`
-  ADD CONSTRAINT `tyontekijat_projektit` FOREIGN KEY (`tyonteID`) REFERENCES `tyontekijat` (`tyontekijaID`);
+
 
  --
 -- Lisätään tyontekijat-tauluun dataa.
