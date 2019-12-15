@@ -23,7 +23,7 @@ module.exports =
                 sqlQuery = "SELECT * FROM projektit";
             }
             else {
-                sqlQuery = "SELECT * FROM projektit WHERE projektiID LIKE '" + req.query.projektiID + "%' ";
+                sqlQuery = "SELECT * FROM projektit WHERE projektiID LIKE '" + req.query.projektiID + "%' " + "AND nimi LIKE '" + req.query.nimi + "%' ";
             }
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
@@ -105,28 +105,75 @@ module.exports =
             });
         },
 
-        create: function (req, res) {
-            if (req.query.NIMI === "" || req.query.OSOITE == "" || req.query.ASTY_AVAIN == "" || req.query.POSTINRO == "" || req.query.POSTITMP == "" || req.query.LUONTIPVM == "") {
-                console.log("Virhe lisattaessa uutta asiakasta, tayta kaikki kentat");
-                //res.send(error);
-                //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
+        // Lisää uuden projektin ja tarkastaa, onko tarvittavat parametrit syötetty.
+        createProject: function (req, res) {
+            if (req.query.nimi == "") {
+                console.log("Virhe lisattaessa uutta projektia, nimi puuttuu");
                 res.send({ "status": 500, "error": error, "response": null });
                 
             }
             else {
-                sqlQuery = "INSERT INTO asiakas (NIMI, OSOITE, POSTINRO, POSTITMP, LUONTIPVM, ASTY_AVAIN)" + " " +
-                    "VALUES" + " " + "(" + "'" + req.query.NIMI + "'" + "," + "'" + req.query.OSOITE + "'" + "," + "'" + req.query.POSTINRO +
-                    "'" + "," + "'" + req.query.POSTITMP + "'" + "," + "'" + req.query.LUONTIPVM + "'" + "," + "'" + req.query.ASTY_AVAIN + "'" + ")" + ";";
+                sqlQuery = "INSERT INTO projektit (nimi)" + " " +
+                    "VALUES" + " " + "(" + "'" + req.query.NIMI + "'" + ")" + ";";
 
-                //sqlQuery = "SELECT * FROM asiakas WHERE NIMI LIKE '" + req.query.NIMI + "%' " +
-                //    "AND OSOITE LIKE '" + req.query.OSOITE + "%' AND ASTY_AVAIN LIKE '" + req.query.ASTY_AVAIN + "%'";
             }
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
-                    console.log("Virhe lisattaessa uutta asiakasta, syy: " + error);
+                    console.log("Virhe lisattaessa uutta projektia, syy: " + error);
                     window.alert(error);
                     //res.send(error);
                     //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
+                    res.send({ "status": 500, "error": error, "response": null });
+                    
+                }
+
+                console.log("Data = " + JSON.stringify(results));
+                console.log("Params = " + JSON.stringify(req.query));
+                res.json(results);
+            });
+        },
+
+        // Lisää uuden työntekijän ja tarkastaa, onko tarvittavat parametrit syötetty.
+        createWorker: function (req, res) {
+            if (req.query.nimi == "") {
+                console.log("Virhe lisattaessa uutta tyontekijaa, nimi puuttuu");
+                res.send({ "status": 500, "error": error, "response": null });
+                
+            }
+            else {
+                sqlQuery = "INSERT INTO projektit (nimi)" + " " +
+                    "VALUES" + " " + "(" + "'" + req.query.NIMI + "'" + ")" + ";";
+
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe lisattaessa uutta projektia, syy: " + error);
+                    window.alert(error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                    
+                }
+
+                console.log("Data = " + JSON.stringify(results));
+                console.log("Params = " + JSON.stringify(req.query));
+                res.json(results);
+            });
+        },
+
+        // Lisää uuden kellotuksen ja tarkastaa, onko tarvittavat parametrit syötetty.
+        createTime: function (req, res) {
+            if (req.query.nimi == "") {
+                console.log("Virhe lisattaessa uutta kellotusta, nimi puuttuu");
+                res.send({ "status": 500, "error": error, "response": null });
+                
+            }
+            else {
+                sqlQuery = "INSERT INTO tyoajat (tyoteID, proID, aloitus, lopetus)" + " " +
+                    "VALUES " + "(" + "'" + req.query.tyoteID + "'" + "'" + req.query.proID + "'" + "'" + req.query.aloitus + "'" + "'" + req.query.lopetus + "'" + ")" + ";";
+
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe lisattaessa uutta projektia, syy: " + error);
                     window.alert(error);
                     res.send({ "status": 500, "error": error, "response": null });
                     
@@ -152,17 +199,12 @@ module.exports =
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa Asiakas-taulusta, syy: " + error);
-                    //res.send(error);
-                    //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
                     console.log("Data = " + JSON.stringify(results));
                     console.log("Params = " + JSON.stringify(req.query));
                     res.json(results);
-                    //res.statusCode = 201;
-                    //res.send(results);
-                    //res.send({ "status": 768, "error": null, "response": results });
                 }
             });
 

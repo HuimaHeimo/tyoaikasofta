@@ -64,7 +64,7 @@ CREATE TABLE `tyoajat` (
   `proID` INT(11) NOT NULL,
   `aloitus` DATETIME NOT NULL,
   `lopetus` DATETIME NOT NULL,
-   PRIMARY KEY (`tyoaikaID`, `proid`)
+   PRIMARY KEY (`tyoaikaID`, `tyoteID`, `proid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
