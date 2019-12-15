@@ -48,7 +48,6 @@ DROP TABLE IF EXISTS `projektit`;
 
 CREATE TABLE `projektit` (
   `projektiID` INT(11) NOT NULL AUTO_INCREMENT,
-  `tyonteID` INT(11) NOT NULL,
   `nimi` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`projektiID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
