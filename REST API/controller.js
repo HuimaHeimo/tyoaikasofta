@@ -114,7 +114,7 @@ module.exports =
             }
             else {
                 sqlQuery = "INSERT INTO projektit (nimi)" + " " +
-                    "VALUES" + " " + "(" + "'" + req.query.NIMI + "'" + ")" + ";";
+                    "VALUES " + "(" + "'" + req.query.nimi + "'" + ")" + ";";
 
             }
             connection.query(sqlQuery, function (error, results, fields) {
@@ -141,13 +141,13 @@ module.exports =
                 
             }
             else {
-                sqlQuery = "INSERT INTO projektit (nimi)" + " " +
-                    "VALUES" + " " + "(" + "'" + req.query.NIMI + "'" + ")" + ";";
+                sqlQuery = "INSERT INTO tyontekijat (nimi)" + " " +
+                    "VALUES " + "(" + "'" + req.query.nimi + "'" + ")" + ";";
 
             }
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
-                    console.log("Virhe lisattaessa uutta projektia, syy: " + error);
+                    console.log("Virhe lisattaessa uutta tyontekijaa, syy: " + error);
                     window.alert(error);
                     res.send({ "status": 500, "error": error, "response": null });
                     
@@ -168,12 +168,15 @@ module.exports =
             }
             else {
                 sqlQuery = "INSERT INTO tyoajat (tyoteID, proID, aloitus, lopetus)" + " " +
-                    "VALUES " + "(" + "'" + req.query.tyoteID + "'" + "'" + req.query.proID + "'" + "'" + req.query.aloitus + "'" + "'" + req.query.lopetus + "'" + ")" + ";";
+                    "VALUES " + "(" + "'" + req.query.tyoteID + "'" + "," 
+                    + "'" + req.query.proID + "'" + "," + "'" + req.query.aloitus + "'" + "," + "'" + req.query.lopetus + "'" + ")" + ";";
 
             }
+
+            console.log(sqlQuery);
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
-                    console.log("Virhe lisattaessa uutta projektia, syy: " + error);
+                    console.log("Virhe lisattaessa uutta tyoaikaa, syy: " + error);
                     window.alert(error);
                     res.send({ "status": 500, "error": error, "response": null });
                     
