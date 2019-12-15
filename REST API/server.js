@@ -49,7 +49,8 @@ app.use(cookieParser());
 // REST API tyoaika
 app.route('/projects')
     .get(controller.fetchProjects)
-    .post(controller.createProject);
+    .post(controller.createProject)
+    .delete(controller.deleteProject);
 
 
 app.route('/login')
@@ -58,15 +59,17 @@ app.route('/login')
 
 app.route('/workers')
     .get(controller.fetchWorkers)
-    .post(controller.createWorker);
+    .post(controller.createWorker)
+    .delete(controller.deleteWorker);
 
 app.route('/times')
     .get(controller.fetchTimes)
-    .post(controller.createTime);
+    .post(controller.createTime)
+    .delete(controller.deleteTime);
 
 app.route('/Asiakas/:id')
     .put(controller.update)
-    .delete(controller.delete);
+    //.delete(controller.delete);
 
 
 app.get('/getuser', (req, res) => {

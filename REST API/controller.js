@@ -192,16 +192,16 @@ module.exports =
 
         },
 
-        delete: function (req, res) {
+        deleteWorker: function (req, res) {
             if (req.query.ID == "") {
                 
             }
             else {
-                sqlQuery = "DELETE FROM asiakas WHERE AVAIN=" + "'" + req.params.id + "'" + ";";
+                sqlQuery = "DELETE FROM tyontekijat WHERE tyontekijaID=" + "'" + req.query.tyontekijaID + "'" + ";";
             }
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
-                    console.log("Virhe haettaessa dataa Asiakas-taulusta, syy: " + error);
+                    console.log("Virhe poistettaessa dataa tyontekijat-taulusta, syy: " + error);
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
@@ -210,7 +210,45 @@ module.exports =
                     res.json(results);
                 }
             });
+        },
 
+        deleteProject: function (req, res) {
+            if (req.query.ID == "") {
+                
+            }
+            else {
+                sqlQuery = "DELETE FROM projektit WHERE projektiID=" + "'" + req.query.projektiID + "'" + ";";
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe poistettaessa dataa projektit-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));
+                    res.json(results);
+                }
+            });
+        },
 
+        deleteTime: function (req, res) {
+            if (req.query.ID == "") {
+                
+            }
+            else {
+                sqlQuery = "DELETE FROM projektit WHERE tyoaikaID=" + "'" + req.query.tyoaikaID + "'" + ";";
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe poistettaessa dataa tyoajat-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));
+                    res.json(results);
+                }
+            });
         }
     }
