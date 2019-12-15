@@ -93,14 +93,14 @@ ALTER TABLE `tyoajat`
 --
 -- Lisätään projektit-tauluun dataa.
 --
- INSERT INTO `projektit` (`projektiID`, `tyonteID`, `nimi`) VALUES
- (1, 2, 'Ydinlaskeuman siivous'),
- (2, 5, 'Papattikaupan kehitys'),
- (3, 1, 'Operation X'),
- (4, 4, 'Operation Ripper'),
- (5, 6, 'Pappatunturin korjaus'),
- (6, 7, 'The Great Theft'),
- (7, 3, 'Kuulento');
+ INSERT INTO `projektit` (`projektiID`, `nimi`) VALUES
+ (1, 'Ydinlaskeuman siivous'),
+ (2, 'Papattikaupan kehitys'),
+ (3, 'Operation X'),
+ (4, 'Operation Ripper'),
+ (5, 'Pappatunturin korjaus'),
+ (6, 'The Great Theft'),
+ (7, 'Kuulento');
  
  --
 -- Lisätään tyoajat-tauluun dataa.
