@@ -7,43 +7,34 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Työajanhallintasovellus</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>  
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 
 <script>
 
-
     $(function () {
 
         $("#btnAdd").click(function () {
             $("#workerdialog").dialog();
         })
-        
+
         $("#workers").click(function fetchWorkers() {
-            $('#results').html("");
-            document.getElementById("frmAddWorker").innerHTML = "Lisää työntekijä";
-            $.get("http://localhost:3002/workers").done(function(data, status) {
-                $.each(data, function (i , item) {
-                    var $tr = $('<tr>').append(
-                        $('<td>').text(item.nimi)
-                    ).appendTo("#results");
-                })
-            }) 
-        });
+            $("#maindiv").empty();
+            $("#maindiv").load("worker.html");
+        })
 
         $("#projects").click(function fetchProjects() {
-            $('#results').html("");
-            document.getElementById("add").innerHTML = "Lisää projekti";
-            $.get("http://localhost:3002/projects").done(function(data, status) {
-                $.each(data, function (i , item) {
-                    var $tr = $('<tr>').append(
-                        $('<td>').text(item.nimi)
-                    ).appendTo("#results");
-                })
-            }) 
-        });
+            $("#maindiv").empty();
+            $("#maindiv").load("project.html");
+        })
+
+        $("#times").click(function fetchProjects() {
+            $("#maindiv").empty();
+            $("#maindiv").load("time.html");
+        })
 
     });
 </script>
@@ -59,13 +50,13 @@
 
 
     <div class="topnav" style="padding-top:300px">
-        <a href="#etusivu">Etusivu</a>
-        <a href="#projektit" id="projects">Projektit</a>
+        <a href="#main" id="main">Etusivu</a>
+        <a href="#projects" id="projects">Projektit</a>
         <a href="#workers" id="workers">Työntekijät</a>
-        <a href="#ajat">Testailua</a>
+        <a href="#times" id="times">Työajat</a>
     </div>
 
-    <div class="main" id="main">
+    <div class="main" id="maindiv"> <!--
         <h2>Tähän tulee jotain sisältöä...</h2>
         <p>...elikkäst taulukko jotenkin hienosti bootstrapilla sipisteltynä.</p>
         
@@ -73,15 +64,9 @@
 
         <br>
         
-        <button id="btnAdd" type="button" class="btn btn-info">Lisää</button>
-    </div>
+        <button id="btnAdd" type="button" class="btn btn-info">Lisää</button> -->
 
-    <div id="workerdialog" title="Lisää työntekijä" style="display: none">
-    <p>Lisää uusi työntekijä</p>
-    <form id="frmAddWorker">
-        Nimi <br> <input type="text" name="nimi"><br>
-        <input type="submit" value="Lisää" id="dlgAdd" class="btn btn-info">
-    </form>
+
     </div>
 
 </body>

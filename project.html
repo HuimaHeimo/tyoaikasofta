@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Työajanhallintasovellus</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<script>
+    $(function () {
+
+        $("#btnAddProject").click(function () {
+            $("#projectdialog").dialog();
+        })
+
+        $('#results').html("<tr><th>Projektit</th></tr>");
+        $.get("http://localhost:3002/projects").done(function (data, status) {
+            $.each(data, function (i, item) {
+                var $tr = $('<tr>').append(
+                    $('<td>').text(item.nimi)
+                ).appendTo("#results");
+            })
+        })
+    });
+</script>
+
+<body>
+    <div id="projectdiv">
+
+        <br>
+
+        <table id="results"></table>
+        <br>
+        <button id="btnAddProject" type="button" class="btn btn-primary">Lisää projekti</button>
+    </div>
+
+    <div id="projectdialog" title="Lisää projekti" style="display: none">
+            <form id="frmAddWorker">
+                Projektinimike <br> <input type="text" name="projektinimike"><br><br>
+                <input type="submit" value="Lisää" id="dlgAddProject" class="btn btn-primary">
+            </form>
+    </div>
+
+</body>
+
+</html>

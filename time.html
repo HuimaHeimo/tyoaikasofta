@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Työajanhallintasovellus</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<script>
+    $(function () {
+
+        $('#results').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th></tr>");
+        $.get("http://localhost:3002/times").done(function (data, status) {
+            $.each(data, function (i, item) {
+                var $tr = $('<tr>').append(
+                    $('<td>').text("Aloitusaika " + item.aloitus),
+                    $('<td>').text("Lopetusaika " + item.lopetus)
+                ).appendTo("#results");
+            })
+        })
+
+    })
+</script>
+
+
+<body>
+        <div id="timediv">
+
+                <br>
+        
+                <table id="results"></table>
+                <br>
+                <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
+            </div>
+</body>
+
+</html>
