@@ -91,7 +91,7 @@ app.get('/userdata', function (request, response) {
 
 app.get('/', function (request, response) {
 
-    if (request.cookies.userData == null) {
+   /* if (request.cookies.userData == null) {
         response.redirect("/login");
     }
     else {
@@ -100,8 +100,12 @@ app.get('/', function (request, response) {
             response.write(data);
             response.end();
         });
-    }
-        
+    } */
+    fs.readFile("front.html", function (err, data) {
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.write(data);
+        response.end();
+    });
     
 });
 
