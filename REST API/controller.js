@@ -19,26 +19,23 @@ module.exports =
         // Hakee kaikki projektit, jos parametrien arvot ovat tyhjiä. Mikäli eivät ole, rajataan vastaanotettujen
         // arvojen perusteella.
         fetchProjects: function (req, res) {
-            if (req.query.projektiID == "") {
-                sqlQuery = "SELECT * FROM projektit";
+            if (req.query.projektiID == "" || req.query.projektiID == undefined) {   
+                sqlQuery = "SELECT * FROM projektit";     
             }
             else {
-                sqlQuery = "SELECT * FROM projektit WHERE projektiID LIKE '" + req.query.projektiID + "%' " + "AND nimi LIKE '" + req.query.nimi + "%' ";
+                sqlQuery = "SELECT * FROM projektit WHERE projektiID LIKE '" + req.query.projektiID + "%' " + "AND nimi LIKE '" + req.query.nimi + "%' "; 
             }
+
+            console.log(sqlQuery);
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa projektit-taulusta, syy: " + error);
-                    //res.send(error);
-                    //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
                     console.log("Data = " + JSON.stringify(results));
                     res.json(results);
-                    
-                    //res.statusCode = 201;
-                    //res.send(results);
-                    //res.send({ "status": 768, "error": null, "response": results });
+
                 }
             });
 
@@ -55,6 +52,9 @@ module.exports =
             if (req.query.nimi == "" && req.query.tyontekijaID == "") {
                 sqlQuery = "SELECT * FROM tyontekijat";
             }
+            else if (req.query.nimi == undefined && req.query.tyontekijaID == undefined) {
+                sqlQuery = "SELECT * FROM tyontekijat";
+            }
             else {
                 sqlQuery = "SELECT * FROM tyontekijat WHERE nimi LIKE '" + req.query.nimi + "%' " +
                     "AND tyontekijaID LIKE '" + req.query.tyontekijaID + "%' ";
@@ -62,17 +62,12 @@ module.exports =
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa tyontekijat-taulusta, syy: " + error);
-                    //res.send(error);
-                    //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
                     console.log("Data = " + JSON.stringify(results));
                     console.log("Params = " + JSON.stringify(req.query));
                     res.json(results);
-                    //res.statusCode = 201;
-                    //res.send(results);
-                    //res.send({ "status": 768, "error": null, "response": results });
                 }
             });
         },
@@ -83,6 +78,10 @@ module.exports =
             && req.query.lopetus == "") {
                 sqlQuery = "SELECT * FROM tyoajat";
             }
+            else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID == undefined && req.query.aloitus == undefined
+            && req.query.lopetus == undefined) {
+                sqlQuery = "SELECT * FROM tyoajat";
+            }
             else {
                 sqlQuery = "SELECT * FROM tyoajat WHERE tyoaikaID LIKE '" + req.query.tyoaikaID + "%' " +
                     "AND tyoteID LIKE '" + req.query.tyoteID + "%' " + "AND proID LIKE '" + req.query.proID + "%' ";
@@ -90,17 +89,13 @@ module.exports =
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
-                    //res.send(error);
-                    //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
                     console.log("Data = " + JSON.stringify(results));
                     console.log("Params = " + JSON.stringify(req.query));
+
                     res.json(results);
-                    //res.statusCode = 201;
-                    //res.send(results);
-                    //res.send({ "status": 768, "error": null, "response": results });
                 }
             });
         },
@@ -121,8 +116,6 @@ module.exports =
                 if (error) {
                     console.log("Virhe lisattaessa uutta projektia, syy: " + error);
                     window.alert(error);
-                    //res.send(error);
-                    //res.send(JSON.stringify({"status": 500, "error": error, "response": null})); 
                     res.send({ "status": 500, "error": error, "response": null });
                     
                 }
@@ -192,6 +185,7 @@ module.exports =
 
         },
 
+        // Poistaa työntekijän taulusta ID:n perusteella.
         deleteWorker: function (req, res) {
             if (req.query.ID == "") {
                 
@@ -212,6 +206,7 @@ module.exports =
             });
         },
 
+        // Poistaa projektin taulusta ID:n perusteella.
         deleteProject: function (req, res) {
             if (req.query.ID == "") {
                 
@@ -232,6 +227,7 @@ module.exports =
             });
         },
 
+        // Poistaa kellotuksen ID:n perusteella
         deleteTime: function (req, res) {
             if (req.query.ID == "") {
                 
