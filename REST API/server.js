@@ -21,6 +21,7 @@ let users = {
 
 // Määrittelee esimerkiksi ulkoiset tyylitiedostot ja muut tiedostot, joita voi käyttää selaimen kautta.
 app.use(express.static(__dirname + '/www'));
+app.use(express.static(__dirname + '/www/images'));
 
 
 
