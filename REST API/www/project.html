@@ -15,6 +15,11 @@
 <script>
     $(function () {
 
+        // dialogi aukeaa, kun klikataan tablesta tiettyä tekijää
+        $("#results").delegate("tr", "click", function () {
+            $("#showProjectdlg").dialog();
+        });
+
         $("#btnAddProject").click(function () {
             $("#projectdialog").dialog();
         })
@@ -54,6 +59,15 @@
                 Projektinimike <br> <input type="text" name="projektinimike"><br><br>
                 <input type="submit" value="Lisää" id="dlgAddProject" class="btn btn-primary">
             </form>
+    </div>
+
+    <div id="showProjectdlg" title="Muokkaa projektia" style="display:none">
+        <form id="frmEditProject">
+            Projektinimike: <input type="text" name="eproject"><br><br>
+            ID: <br> <input type="text" name="projectid"><br><br>
+            <input type="submit" value="Muokkaa" id="dlgEditProject" class="btn btn-primary">
+            <input type="submit" value="Poista" id="dlgDeleteProject" class="btn btn-danger">
+        </form>
     </div>
 
 </body>

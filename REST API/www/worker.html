@@ -45,6 +45,7 @@ $(document).ready(function () {
         })
         };
 
+        fetchWorkers();
 /*
         // hakee kaikki työntekijät tableen
         $('#results').html("<tr><th>Työntekijät</th></tr>");
@@ -66,7 +67,9 @@ $(document).ready(function () {
             
         });
 
-        fetchWorkers();
+        $("#fetch").click(function (){
+            fetchWorkers();
+        });
 
 
 
@@ -104,6 +107,7 @@ $(document).ready(function () {
            <p id="testx"></p>
         </form>
     </div>
+    <button id="fetch">fetch</button>
 
 </body>
 
