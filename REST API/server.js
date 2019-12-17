@@ -20,7 +20,8 @@ let users = {
 
 
 // Määrittelee esimerkiksi ulkoiset tyylitiedostot ja muut tiedostot, joita voi käyttää selaimen kautta.
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/www'));
+app.use(express.static(__dirname + '/www/images'));
 
 
 
@@ -43,7 +44,7 @@ app.use(cookieParser());
 
 
 // Staattiset filut
-// app.use(express.static('public'));
+app.use(express.static('/'));
 
 
 // REST API tyoaika
@@ -101,7 +102,7 @@ app.get('/', function (request, response) {
             response.end();
         });
     } */
-    fs.readFile("../index.html", function (err, data) {
+    fs.readFile("./index.html", function (err, data) {
         response.writeHead(200, { 'Content-Type': 'text/html' });
         response.write(data);
         response.end();
