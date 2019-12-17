@@ -26,7 +26,16 @@
                     $('<td>').text(item.nimi)
                 ).appendTo("#results");
             })
-        })
+        });
+
+        // lisää uuden projektin ja sulkee dialogin. TODO: Fetch toimimaan
+        $("#dlgAddProject").click(function () {
+            $.post("http://localhost:3002/projects", { "nimi": $("input[name=projektinimike]").val() });
+            $("#projectdialog").dialog("close");
+        });
+
+
+
     });
 </script>
 

@@ -102,14 +102,17 @@ module.exports =
 
         // Lisää uuden projektin ja tarkastaa, onko tarvittavat parametrit syötetty.
         createProject: function (req, res) {
-            if (req.query.nimi == "") {
+
+            var nimi = req.body.nimi;
+
+            if (req.query.nimi == "" || req.query.nimi == "undefined") {
                 console.log("Virhe lisattaessa uutta projektia, nimi puuttuu");
                 res.send({ "status": 500, "error": error, "response": null });
                 
             }
             else {
                 sqlQuery = "INSERT INTO projektit (nimi)" + " " +
-                    "VALUES " + "(" + "'" + req.query.nimi + "'" + ")" + ";";
+                    "VALUES " + "(" + "'" + nimi + "'" + ")" + ";";
 
             }
             connection.query(sqlQuery, function (error, results, fields) {
