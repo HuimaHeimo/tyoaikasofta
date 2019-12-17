@@ -35,6 +35,7 @@ $(document).ready(function () {
 
         function fetchWorkers() {
             $("#results").empty();
+            $('#results').html("<tr><th>Työntekijä</th><th>ID</th></tr>");
             $.get("http://localhost:3002/workers").done(function (data, status) {
             $.each(data, function (i, item) {
                 var $tr = $('<tr>').append(
@@ -90,7 +91,7 @@ $(document).ready(function () {
             Nimi <br> <input type="text" name="nimi"><br><br>
          <!-- <input type="submit" value="Lisää" id="dlgAddWorker" class="btn btn-primary"> -->
         </form>
-        <button id="send">Lisää</button>
+        <button id="send" class="btn btn-primary">Lisää</button>
     </div>
 
     <div id="showWorkerdlg" title="Muokkaa työntekijää" style="display:none">
