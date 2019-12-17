@@ -33,26 +33,104 @@ $(document).ready(function () {
             $("#workerdialog").dialog();
         });
 
+        // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään valitun henkilön avain.
+        var id = "";
+
+        // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
+        $(document).on("click", "a.edit", function (e) {
+                e.preventDefault();
+                id = $(this).parent().prev().prev().text();
+                
+                openDialog();
+                
+            }); 
+
+
+            // Avaa dialogin ja hakee valitun asiakkaan tiedot tekstikenttiin
+            function openDialog() {
+                $("#showWorkerdlg").dialog({
+                width: 430,
+                height: 360,
+                modal: true,
+               buttons: {
+                    Peruuta: function () {
+                        $(this).dialog('close');
+                    }
+
+                    }
+
+
+                });
+
+                // Hakee valitun asiakkaan tiedot tekstikenttiin.
+                $.getJSON("http://127.0.0.1:3002/workers?tyontekijaID=" + id + "&nimi=", function (data) {
+
+                    $("#enimi").val(data[0].nimi);
+                    $("#workerid").val(data[0].tyontekijaID);
+
+                });
+            }
+            
+        
+
+        // Hakee tietokannasta kaikki työntekijät
         function fetchWorkers() {
             $("#results").empty();
-            $.get("http://localhost:3002/workers").done(function (data, status) {
-            $.each(data, function (i, item) {
+            $.getJSON("http://127.0.0.1:3002/workers", function (data) {
+                        var len = data.length;
+                        for (var i = 0; i < len; i++) {
+                            $("#results").append(
+                                "<tr>" +
+                                "<td>" + data[i].tyontekijaID + "</td>" +
+                                "<td>" + data[i].nimi + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='edit'>Muokkaa</a>" + "</td>" +
+                                "</tr>"
+                            )
+                        }
+                    });
+            /*
+            $.get("http://localhost:3002/workers").done(function (data) {
+               
+           $.each(data, function (i, item) {
                 var $tr = $('<tr>').append(
+                    $('<td>').text(item.tyontekijaID), // tämä vain testaamisen ja selkeyden vuoksi, ei tule näkymään lopullisessa layoutissa
                     $('<td>').text(item.nimi),
-                    $('<td>').text(item.tyontekijaID) // tämä vain testaamisen ja selkeyden vuoksi, ei tule näkymään lopullisessa layoutissa
-                ).appendTo("#results");
+                    $('<button>').val(item.tyontekijaID).text('Muokkaa').attr("id", "muokkausnappi").click(function () {
+                        
+                        var id = this.parent().prev().prev().text();
+                        $.getJSON("http://127.0.0.1:3002/worker?tyontekijaID=" + id + "?nimi=", function (data) {
+                            
+                            $("#enimi").val(data[0].nimi);
+                            $("#workerid").val(data[0].tyontekijaID);
+            
+                        });
+                        $("#showWorkerdlg").dialog();
+                    })
+                ).appendTo("#results")
             })
-        })
+        }) */
         };
 
         fetchWorkers();
 
         // dialogi aukeaa, kun klikataan tablesta tiettyä tekijää
+        /*
         $("#results").delegate("tr", "click", function () {
             $("#showWorkerdlg").dialog();
-        });
+            
+        }); */
 
-        // lisää työntekijän ja sulkee dialogin. TODO: Fetch toimimaan
+       /* $("#results").on("click", function () {
+            $("#showWorkerdlg").dialog();
+            id = $(this).parent().text();
+            $.getJSON("http://127.0.0.1:3002/worker?tyontekijaID=" + id + "?nimi=", function (data) {
+                $("#enimi").val(data[0].NIMI);
+                $("#workerid").val(data[0].OSOITE);
+            });  
+        }); */
+
+
+        // lisää työntekijän ja sulkee dialogin.
         $("#send").click(function () {
             $.post("http://localhost:3002/workers", { "nimi": $("input[name=nimi]").val() });
             fetchWorkers();
@@ -95,11 +173,12 @@ $(document).ready(function () {
 
     <div id="showWorkerdlg" title="Muokkaa työntekijää" style="display:none">
         <form id="frmEditWorker">
-            Nimi <br> <input type="text" name="enimi"><br><br>
-            ID : <br> <input type="text" name="workerid"><br><br>
-            <input type="submit" value="Muokkaa" id="dlgEditWorker" class="btn btn-primary">
-            <input type="submit" value="Poista" id="dlgDeleteWorker" class="btn btn-danger">
+            Nimi : <br> <input type="text" id="enimi"><br><br>
+            ID : <br> <input type="text" id="workerid"><br><br>
+         <!--   <input type="submit" value="Muokkaa" id="dlgEditWorker" class="btn btn-primary"> -->
+         <!--   <input type="submit" value="Poista" id="dlgDeleteWorker" class="btn btn-danger"> -->
         </form>
+        <button id="save">Tallenna</button>
     </div>
 
 
