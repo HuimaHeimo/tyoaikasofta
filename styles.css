@@ -2,6 +2,16 @@ body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
   }
+
+  .banner {
+    background-image: url("../Images/Cloud.jpg");
+    height: 50%;
+    background-position: right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    padding: 150px;
+  }
   
   .topnav {
     overflow: hidden;

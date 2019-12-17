@@ -128,14 +128,17 @@ module.exports =
 
         // Lisää uuden työntekijän ja tarkastaa, onko tarvittavat parametrit syötetty.
         createWorker: function (req, res) {
-            if (req.query.nimi == "") {
+
+            var nimi = req.body.nimi;
+
+            if (req.query.nimi == "undefined" || req.query.nimi == "") {
                 console.log("Virhe lisattaessa uutta tyontekijaa, nimi puuttuu");
                 res.send({ "status": 500, "error": error, "response": null });
                 
             }
             else {
                 sqlQuery = "INSERT INTO tyontekijat (nimi)" + " " +
-                    "VALUES " + "(" + "'" + req.query.nimi + "'" + ")" + ";";
+                    "VALUES " + "(" + "'" + nimi + "'" + ")" + ";";
 
             }
             connection.query(sqlQuery, function (error, results, fields) {

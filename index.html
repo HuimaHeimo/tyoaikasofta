@@ -17,10 +17,6 @@
 
     $(function () {
 
-        $("#btnAdd").click(function () {
-            $("#workerdialog").dialog();
-        })
-
         $("#workers").click(function fetchWorkers() {
             $("#maindiv").empty();
             $("#maindiv").load("worker.html");
@@ -47,9 +43,11 @@
     ?>
 
 
+    <div class="banner">
+        <h1>Työajanhallintasovellus</h1>
+    </div>
 
-
-    <div class="topnav" style="padding-top:300px">
+    <div class="topnav">
         <a href="#main" id="main">Etusivu</a>
         <a href="#projects" id="projects">Projektit</a>
         <a href="#workers" id="workers">Työntekijät</a>

@@ -16,20 +16,64 @@
 <script>
 
     $(function () {
+        /*
+                // dialogi aukeaa, kun klikataan tablesta tiettyä tekijää
+                    $("#results").delegate("tr", "click", function () {
+                        $("#showWorkerdlg").dialog();
+                        $.get("http://localhost:3002/workers", tyontekijaID = 5);
+                        $.each(data, function (i, item) {
+                            $("#testx").text(item.nimi);
+                        })
+                        
+                });
+        */
 
+        // dialogi auki työntekijän lisäämistä varten
         $("#btnAddWorker").click(function () {
             $("#workerdialog").dialog();
-        })
+        });
 
+        $.fn.fetchWorkers = function() {
+            $.get("http://localhost:3002/workers").done(function (data, status) {
+            $.each(data, function (i, item) {
+                var $tr = $('<tr>').append(
+                    $('<td>').text(item.nimi),
+                    $('<td>').text(item.tyontekijaID) // tämä vain testaamisen ja selkeyden vuoksi, ei tule näkymään lopullisessa layoutissa
+                ).appendTo("#results");
+            })
+        })
+        };
+
+
+        // hakee kaikki työntekijät tableen
         $('#results').html("<tr><th>Työntekijät</th></tr>");
         $.get("http://localhost:3002/workers").done(function (data, status) {
             $.each(data, function (i, item) {
                 var $tr = $('<tr>').append(
-                    $('<td>').text(item.nimi)
+                    $('<td>').text(item.nimi),
+                    $('<td>').text(item.tyontekijaID) // tämä vain testaamisen ja selkeyden vuoksi, ei tule näkymään lopullisessa layoutissa
                 ).appendTo("#results");
             })
-        })
+        });
+
+
+        // lisää työntekijän ja sulkee dialogin. TODO: Fetch toimimaan
+        $("#dlgAddWorker").click(function () {
+            $.post("http://localhost:3002/workers", { "nimi": $("input[name=nimi]").val() });
+            $("#workerdialog").dialog("close");
+            fetchWorkers();
+        });
+
+        $("#fetch").click(function ()  {
+        fetchWorkers();
+        });
+
+
     });
+
+
+
+
 
 
 </script>
@@ -45,11 +89,20 @@
     </div>
 
     <div id="workerdialog" title="Lisää työntekijä" style="display: none">
-            <form id="frmAddWorker">
-                Nimi <br> <input type="text" name="nimi"><br><br>
-                <input type="submit" value="Lisää" id="dlgAddWorker" class="btn btn-primary">
-            </form>
+        <form id="frmAddWorker">
+            Nimi <br> <input type="text" name="nimi"><br><br>
+            <input type="submit" value="Lisää" id="dlgAddWorker" class="btn btn-primary">
+        </form>
     </div>
+
+    <div id="showWorkerdlg" title="Muokkaa työntekijää" style="display:none">
+        <form id="frmEditWorker">
+            Nimi <br> <input type="text" name="enimi"><br><br>
+            ID : <br> <input type="text" name="workerid"><br><br>
+            <p id="testx"></p>
+        </form>
+    </div>
+    <button id="fetch">fetch</button>
 
 </body>
 
