@@ -71,7 +71,7 @@
                 });
 
                 // Hakee valitun projektin tiedot tekstikenttiin.
-                $.getJSON("http://127.0.0.1:3002/projects?projektiID)" + id + "&nimi=", function (data) {
+                $.getJSON("http://127.0.0.1:3002/projects?projektiID=" + id + "&nimi=", function (data) {
 
                     $("input[name=eproject]").val(data[0].nimi);
                     $("input[name=projectid]").val(data[0].projektiID);
@@ -79,8 +79,7 @@
                 });
             }
 
-        // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään valitun projektin avain.
-        var id = "";
+        
         
         /*
         $('#results').html("<tr><th>Projektit</th></tr>");
