@@ -13,17 +13,76 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <script>
-    $(function () {
-
+    $(document).ready(function () {
+        /*
         // dialogi aukeaa, kun klikataan tablesta tiettyä tekijää
         $("#results").delegate("tr", "click", function () {
             $("#showProjectdlg").dialog();
         });
+        */
+
+        fetchProjects();
 
         $("#btnAddProject").click(function () {
             $("#projectdialog").dialog();
         })
 
+        function fetchProjects() {
+            $("#results").empty();
+            $('#results').html("<tr><th>ID</th><th>Projekti</th><th> </th></tr>");
+            $.getJSON("http://127.0.0.1:3002/projects", function (data) {
+                        var len = data.length;
+                        for (var i = 0; i < len; i++) {
+                            $("#results").append(
+                                "<tr>" +
+                                "<td>" + data[i].projektiID + "</td>" +
+                                "<td>" + data[i].nimi + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='edit'>Muokkaa</a>" + "</td>" +
+                                "</tr>"
+                            )
+                        }
+                    
+                    });
+        };
+        
+
+        $(document).on("click", "a.edit", function (e) {
+                e.preventDefault();
+                id = $(this).parent().prev().prev().text();
+                
+                openDialog();
+                
+            }); 
+
+        // Avaa dialogin ja hakee valitun asiakkaan tiedot tekstikenttiin
+        function openDialog() {
+                $("#showProjectdlg").dialog({
+                width: 430,
+                height: 360,
+                modal: true,
+               buttons: {
+                    Peruuta: function () {
+                        $(this).dialog('close');
+                    }
+
+                    }
+
+
+                });
+
+                // Hakee valitun asiakkaan tiedot tekstikenttiin.
+                $.getJSON("http://127.0.0.1:3002/projects?projektiID)" + id + "&nimi=", function (data) {
+
+                    $("input[name=eproject]").val(data[0].nimi);
+                    $("input[name=projectid]").val(data[0].projektiID);
+
+                });
+            }
+
+        // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään valitun projektin avain.
+        var id = "";
+        
+        /*
         $('#results').html("<tr><th>Projektit</th></tr>");
         $.get("http://localhost:3002/projects").done(function (data, status) {
             $.each(data, function (i, item) {
@@ -32,12 +91,15 @@
                 ).appendTo("#results");
             })
         });
+        */
 
         // lisää uuden projektin ja sulkee dialogin. TODO: Fetch toimimaan
         $("#dlgAddProject").click(function () {
             $.post("http://localhost:3002/projects", { "nimi": $("input[name=projektinimike]").val() });
             $("#projectdialog").dialog("close");
         });
+
+
 
 
 
@@ -63,12 +125,13 @@
 
     <div id="showProjectdlg" title="Muokkaa projektia" style="display:none">
         <form id="frmEditProject">
-            Projektinimike: <input type="text" name="eproject"><br><br>
-            ID: <br> <input type="text" name="projectid"><br><br>
-            <input type="submit" value="Muokkaa" id="dlgEditProject" class="btn btn-primary">
-            <input type="submit" value="Poista" id="dlgDeleteProject" class="btn btn-danger">
+            Projektinimike : <br> <input type="text" name="eproject"><br><br>
+            ID : <br> <input type="text" name="projectid" disabled><br><br>
+            <button id="dlgEditProject" class="btn btn-primary">Tallenna</button>
+            <button class="btn btn-danger">Poista</button>
         </form>
     </div>
+
 
 </body>
 

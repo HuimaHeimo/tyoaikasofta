@@ -65,7 +65,7 @@ $(document).ready(function () {
                 // Hakee valitun asiakkaan tiedot tekstikenttiin.
                 $.getJSON("http://127.0.0.1:3002/workers?tyontekijaID=" + id + "&nimi=", function (data) {
 
-                    $("#enimi").val(data[0].nimi);
+                    $("input[name=enimi]").val(data[0].nimi);
                     $("#workerid").val(data[0].tyontekijaID);
 
                 });
@@ -76,6 +76,7 @@ $(document).ready(function () {
         // Hakee tietokannasta kaikki työntekijät
         function fetchWorkers() {
             $("#results").empty();
+            $('#results').html("<tr><th>ID</th><th>Työntekijä</th><th> </th></tr>");
             $.getJSON("http://127.0.0.1:3002/workers", function (data) {
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
@@ -135,15 +136,31 @@ $(document).ready(function () {
         $("#send").click(function () {
             $.post("http://localhost:3002/workers", { "nimi": $("input[name=nimi]").val() });
             fetchWorkers();
-            $("#workerdialog").dialog("close");
-            
+            $(this).dialog('close');            
         });
 
         $("#fetch").click(function (){
             fetchWorkers();
         });
 
+        $("#save").click(function () {
+            $.post('http://localhost:3002/worker/muokkaa', { "tyontekijaID": id, "nimi": $("input[name=enimi]").val()
+            });
+            fetchWorkers(); // muokkaus toimii, fetch toimii satunnaisesti...
+            $("#showWorkerdlg").dialog("close");
 
+        })
+
+        // työntekijän poisto
+        $("#deleteWorker").click(function () {
+            $.ajax({
+                url: 'http://localhost:3002/workers',
+                method: 'DELETE',
+                data: {"tyontekijaID" : id}
+            })
+            fetchWorkers();
+            $("#showWorkerdlg").dialog("close");
+        });
 
     });
 
@@ -174,13 +191,15 @@ $(document).ready(function () {
 
     <div id="showWorkerdlg" title="Muokkaa työntekijää" style="display:none">
         <form id="frmEditWorker">
-            Nimi : <br> <input type="text" id="enimi"><br><br>
-            ID : <br> <input type="text" id="workerid"><br><br>
+            Nimi : <br> <input type="text" name="enimi"><br><br>
+            ID : <br> <input type="text" id="workerid" disabled><br><br>
          <!--   <input type="submit" value="Muokkaa" id="dlgEditWorker" class="btn btn-primary"> -->
          <!--   <input type="submit" value="Poista" id="dlgDeleteWorker" class="btn btn-danger"> -->
         </form>
-        <button id="save">Tallenna</button>
+        <button id="save" class="btn btn-primary">Tallenna</button>
+        <button id="deleteWorker" class="btn btn-danger">Poista</button>
     </div>
+    
 
 
 </body>

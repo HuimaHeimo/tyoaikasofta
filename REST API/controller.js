@@ -19,6 +19,7 @@ module.exports =
         // Hakee kaikki projektit, jos parametrien arvot ovat tyhjiä. Mikäli eivät ole, rajataan vastaanotettujen
         // arvojen perusteella.
         fetchProjects: function (req, res) {
+            
             if (req.query.projektiID == "" || req.query.projektiID == undefined) {   
                 sqlQuery = "SELECT * FROM projektit";     
             }
@@ -187,17 +188,42 @@ module.exports =
             });
         },
 
+        // työntekijän päivitys
+        updateWorker: function (req, res) {
+            var nimi = req.body.nimi;
+            var id = req.body.tyontekijaID;
+            if (req.query.tyontekijaID == "") {
+
+            }
+            else {
+                sqlQuery = "UPDATE tyontekijat SET nimi ="+"'" + nimi + "' WHERE tyontekijaID=" + "'" + id + "'" + ";";  
+            }
+            connection.query(sqlQuery ,function (error, results,fields) {
+                if (error) {
+                    console.log("Virhe muokattaessa dataa tyontekijat-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));
+                    res.json(results);
+                }
+            });
+
+        },
+
         update: function (req, res) {
 
         },
 
         // Poistaa työntekijän taulusta ID:n perusteella.
         deleteWorker: function (req, res) {
+            var id = req.body.tyontekijaID;
             if (req.query.ID == "") {
                 
             }
             else {
-                sqlQuery = "DELETE FROM tyontekijat WHERE tyontekijaID=" + "'" + req.query.tyontekijaID + "'" + ";";
+                sqlQuery = "DELETE FROM tyontekijat WHERE tyontekijaID=" + "'" + id + "'" + ";";
             }
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
@@ -208,6 +234,7 @@ module.exports =
                     console.log("Data = " + JSON.stringify(results));
                     console.log("Params = " + JSON.stringify(req.query));
                     res.json(results);
+                    console.log(sqlQuery);
                 }
             });
         },
