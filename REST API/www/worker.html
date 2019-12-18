@@ -135,8 +135,8 @@ $(document).ready(function () {
         // lisää työntekijän ja sulkee dialogin.
         $("#send").click(function () {
             $.post("http://localhost:3002/workers", { "nimi": $("input[name=nimi]").val() });
-            fetchWorkers();
-            $(this).dialog('close');            
+            setTimeout(() => {   fetchWorkers(); }, 500);
+            $("#workerdialog").dialog('close');            
         });
 
         $("#fetch").click(function (){
@@ -146,7 +146,8 @@ $(document).ready(function () {
         $("#save").click(function () {
             $.post('http://localhost:3002/worker/muokkaa', { "tyontekijaID": id, "nimi": $("input[name=enimi]").val()
             });
-            fetchWorkers(); // muokkaus toimii, fetch toimii satunnaisesti...
+            setTimeout(() => {   fetchWorkers(); }, 500);
+            // muokkaus toimii, fetch toimii satunnaisesti...
             $("#showWorkerdlg").dialog("close");
 
         })
@@ -158,7 +159,7 @@ $(document).ready(function () {
                 method: 'DELETE',
                 data: {"tyontekijaID" : id}
             })
-            fetchWorkers();
+            setTimeout(() => {   fetchWorkers(); }, 500);
             $("#showWorkerdlg").dialog("close");
         });
 

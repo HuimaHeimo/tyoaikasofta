@@ -241,12 +241,15 @@ module.exports =
 
         // Poistaa projektin taulusta ID:n perusteella.
         deleteProject: function (req, res) {
+            var id = req.body.projektiID;
             if (req.query.ID == "") {
                 
             }
             else {
-                sqlQuery = "DELETE FROM projektit WHERE projektiID=" + "'" + req.query.projektiID + "'" + ";";
+                sqlQuery = "DELETE FROM projektit WHERE projektiID=" + "'" + id + "'" + ";";
             }
+
+            console.log(sqlQuery);
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe poistettaessa dataa projektit-taulusta, syy: " + error);
