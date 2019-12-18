@@ -14,8 +14,11 @@
 </head>
 
 <script>
-    $(function () {
+    $(document).ready(function () {
 
+        fetchTimes();
+
+        /*
         $('#results').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th></tr>");
         $.get("http://localhost:3002/times").done(function (data, status) {
             $.each(data, function (i, item) {
@@ -27,6 +30,35 @@
         })
 
     })
+    */
+        function dateFormat($pvm1, $pvm2) {
+            var hours = Math.abs($pvm2 - $pvm1) / 36e5;
+            return hours;
+    }
+
+        function fetchTimes() {
+            $("#tresults").empty();
+            $('#tresults').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th></tr>");
+            $.getJSON("http://127.0.0.1:3002/times", function (data) {
+                        var len = data.length;
+                        for (var i = 0; i < len; i++) {
+                            var $pvm1 = new Date (data[i].aloitus);
+                            var $pvm2 = new Date (data[i].lopetus);
+                            var hours = dateFormat($pvm1, $pvm2);
+                            $("#tresults").append(
+                                "<tr>" +
+                                "<td>" + data[i].aloitus + "</td>" +
+                                "<td>" + data[i].lopetus + "</td>" +
+                                "<td>" + hours + "</td>" +
+                                "</tr>"
+                            )
+                        }
+
+                    
+                    });
+        };
+
+    })
 </script>
 
 
@@ -35,10 +67,12 @@
 
                 <br>
         
-                <table id="results"></table>
+                <table id="tresults"></table>
                 <br>
                 <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
-            </div>
+        </div>
+
+        <p id="testip"></p>
 </body>
 
 </html>
