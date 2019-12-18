@@ -159,8 +159,9 @@ $(document).ready(function () {
                 method: 'DELETE',
                 data: {"tyontekijaID" : id}
             })
-            setTimeout(() => {   fetchWorkers(); }, 500);
             $("#showWorkerdlg").dialog("close");
+            setTimeout(() => {   fetchWorkers(); }, 500);
+            
         });
 
     });
