@@ -63,6 +63,9 @@ app.route('/workers')
     .post(controller.createWorker)
     .delete(controller.deleteWorker);
 
+app.route('/worker/muokkaa')
+    .post(controller.updateWorker);
+
 app.route('/times')
     .get(controller.fetchTimes)
     .post(controller.createTime)
