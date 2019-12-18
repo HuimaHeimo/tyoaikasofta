@@ -21,12 +21,17 @@
         });
         */
 
+        // Apumuuttuja projektin muokkausta varten.
+        var id = "";
+
         fetchProjects();
 
+        // Avaa dialogin projektin lisäämistä varten.
         $("#btnAddProject").click(function () {
             $("#projectdialog").dialog();
         })
 
+        // Listaa kaikki projektit tauluun.
         function fetchProjects() {
             $("#results").empty();
             $('#results').html("<tr><th>ID</th><th>Projekti</th><th> </th></tr>");
@@ -45,7 +50,7 @@
                     });
         };
         
-
+        // Tallentaa muokkauspainiketta klikattaessa klikatun projektin id:n muuttujaan ja avaa muokkausdialogin.
         $(document).on("click", "a.edit", function (e) {
                 e.preventDefault();
                 id = $(this).parent().prev().prev().text();
@@ -54,24 +59,19 @@
                 
             }); 
 
-        // Avaa dialogin ja hakee valitun asiakkaan tiedot tekstikenttiin
+        // Avaa dialogin ja hakee valitun projektin tiedot tekstikenttiin
         function openDialog() {
                 $("#showProjectdlg").dialog({
                 width: 430,
                 height: 360,
                 modal: true,
-               buttons: {
-                    Peruuta: function () {
-                        $(this).dialog('close');
-                    }
-
-                    }
+               
 
 
                 });
 
-                // Hakee valitun asiakkaan tiedot tekstikenttiin.
-                $.getJSON("http://127.0.0.1:3002/projects?projektiID)" + id + "&nimi=", function (data) {
+                // Hakee valitun projektin tiedot tekstikenttiin.
+                $.getJSON("http://127.0.0.1:3002/projects?projektiID=" + id + "&nimi=", function (data) {
 
                     $("input[name=eproject]").val(data[0].nimi);
                     $("input[name=projectid]").val(data[0].projektiID);
@@ -79,8 +79,7 @@
                 });
             }
 
-        // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään valitun projektin avain.
-        var id = "";
+        
         
         /*
         $('#results').html("<tr><th>Projektit</th></tr>");
@@ -96,17 +95,37 @@
         // lisää uuden projektin ja sulkee dialogin. TODO: Fetch toimimaan
         $("#dlgAddProject").click(function () {
             $.post("http://localhost:3002/projects", { "nimi": $("input[name=projektinimike]").val() });
-            $("#projectdialog").dialog("close");
+            setTimeout(() => {   fetchProjects(); }, 500);
+            $("#projectdialog").dialog('close');
         });
 
+        // Projektin poisto
+        $("#removeProject").click(function () {
+            $.ajax({
+                url: 'http://localhost:3002/projects',
+                method: 'DELETE',
+                data: {"projektiID" : id}
+            })
+            setTimeout(() => {   fetchProjects(); }, 500);
+            $("#showProjectdlg").dialog("close");
+        });
 
+        // Projektin muokkaus
+        $("#editProject").click(function () {
+            $.post('http://localhost:3002/project/muokkaa', { "projektiID": id, "nimi": $("input[name=eproject]").val()
+            });
+            setTimeout(() => {   fetchProjects(); }, 500);
+            $("#showProjectdlg").dialog("close");
 
+        })
 
 
     });
 </script>
 
 <body>
+
+    <!--Taulukko projektien listaamista varten-->
     <div id="projectdiv">
 
         <br>
@@ -116,20 +135,22 @@
         <button id="btnAddProject" type="button" class="btn btn-primary">Lisää projekti</button>
     </div>
 
+    <!--Dialogi projektien lisäämistä varten-->
     <div id="projectdialog" title="Lisää projekti" style="display: none">
             <form id="frmAddWorker">
                 Projektinimike <br> <input type="text" name="projektinimike"><br><br>
-                <input type="submit" value="Lisää" id="dlgAddProject" class="btn btn-primary">
             </form>
+            <button id="dlgAddProject" class="btn btn-primary">Lisää</button>
     </div>
 
+    <!--Dialogi projektien muokkausta varten-->
     <div id="showProjectdlg" title="Muokkaa projektia" style="display:none">
         <form id="frmEditProject">
             Projektinimike : <br> <input type="text" name="eproject"><br><br>
-            ID : <br> <input type="text" name="projectid" disabled><br><br>
-            <button id="dlgEditProject" class="btn btn-primary">Tallenna</button>
-            <button class="btn btn-danger">Poista</button>
+            ID : <br> <input type="text" name="projectid" disabled><br><br>  
         </form>
+        <button id="editProject" class="btn btn-primary">Tallenna</button>
+        <button id="removeProject" class="btn btn-danger">Poista</button>
     </div>
 
 

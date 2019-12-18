@@ -53,6 +53,9 @@ app.route('/projects')
     .post(controller.createProject)
     .delete(controller.deleteProject);
 
+app.route('/project/muokkaa')
+    .post(controller.updateProject);
+
 
 app.route('/login')
     .post(controller.login);

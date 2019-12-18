@@ -159,6 +159,34 @@ module.exports =
             });
         },
 
+        // Projektin päivitys
+        updateProject: function (req, res) {
+            var nimi = req.body.nimi;
+            var id = req.body.projektiID;
+            if (req.query.tyontekijaID == "") {
+
+            }
+            else {
+                sqlQuery = "UPDATE projektit SET nimi ="+"'" + nimi + "' WHERE projektiID=" + "'" + id + "'" + ";";  
+            }
+            connection.query(sqlQuery ,function (error, results,fields) {
+                if (error) {
+                    console.log("Virhe muokattaessa dataa tyontekijat-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));
+                    res.json(results);
+                }
+            });
+
+        },
+
+        update: function (req, res) {
+
+        },
+
         // Lisää uuden kellotuksen ja tarkastaa, onko tarvittavat parametrit syötetty.
         createTime: function (req, res) {
             if (req.query.nimi == "") {
@@ -241,12 +269,15 @@ module.exports =
 
         // Poistaa projektin taulusta ID:n perusteella.
         deleteProject: function (req, res) {
+            var id = req.body.projektiID;
             if (req.query.ID == "") {
                 
             }
             else {
-                sqlQuery = "DELETE FROM projektit WHERE projektiID=" + "'" + req.query.projektiID + "'" + ";";
+                sqlQuery = "DELETE FROM projektit WHERE projektiID=" + "'" + id + "'" + ";";
             }
+
+            console.log(sqlQuery);
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe poistettaessa dataa projektit-taulusta, syy: " + error);
