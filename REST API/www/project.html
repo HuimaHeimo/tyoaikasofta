@@ -110,6 +110,15 @@
             $("#showProjectdlg").dialog("close");
         });
 
+        // Projektin muokkaus
+        $("#editProject").click(function () {
+            $.post('http://localhost:3002/project/muokkaa', { "projektiID": id, "nimi": $("input[name=eproject]").val()
+            });
+            setTimeout(() => {   fetchProjects(); }, 500);
+            $("#showProjectdlg").dialog("close");
+
+        })
+
 
     });
 </script>

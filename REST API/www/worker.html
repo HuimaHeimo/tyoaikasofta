@@ -132,7 +132,7 @@ $(document).ready(function () {
         }); */
 
 
-        // lisää työntekijän ja sulkee dialogin.
+        // Lisää työntekijän ja sulkee dialogin.
         $("#send").click(function () {
             $.post("http://localhost:3002/workers", { "nimi": $("input[name=nimi]").val() });
             setTimeout(() => {   fetchWorkers(); }, 500);
@@ -147,12 +147,11 @@ $(document).ready(function () {
             $.post('http://localhost:3002/worker/muokkaa', { "tyontekijaID": id, "nimi": $("input[name=enimi]").val()
             });
             setTimeout(() => {   fetchWorkers(); }, 500);
-            // muokkaus toimii, fetch toimii satunnaisesti...
             $("#showWorkerdlg").dialog("close");
 
         })
 
-        // työntekijän poisto
+        // Työntekijän poisto
         $("#deleteWorker").click(function () {
             $.ajax({
                 url: 'http://localhost:3002/workers',
@@ -161,9 +160,7 @@ $(document).ready(function () {
             })
             $("#showWorkerdlg").dialog("close");
             setTimeout(() => {   fetchWorkers(); }, 500);
-            
-        });
-
+        })
     });
 
 
