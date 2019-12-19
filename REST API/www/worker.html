@@ -37,17 +37,17 @@ $(document).ready(function () {
         var id = "";
 
         // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
-        $(document).on("click", "a.edit", function (e) {
+        $(document).on("click", "a.editw", function (e) {
                 e.preventDefault();
                 id = $(this).parent().prev().prev().text();
                 
-                openDialog();
+                openWorkerDialog();
                 
             }); 
 
 
             // Avaa dialogin ja hakee valitun asiakkaan tiedot tekstikenttiin
-            function openDialog() {
+            function openWorkerDialog() {
                 $("#showWorkerdlg").dialog({
                 width: 430,
                 height: 360,
@@ -75,16 +75,16 @@ $(document).ready(function () {
 
         // Hakee tietokannasta kaikki työntekijät
         function fetchWorkers() {
-            $("#results").empty();
-            $('#results').html("<tr><th>ID</th><th>Työntekijä</th><th> </th></tr>");
+            $("#wresults").empty();
+            $('#wresults').html("<tr><th>ID</th><th>Työntekijä</th><th> </th></tr>");
             $.getJSON("http://127.0.0.1:3002/workers", function (data) {
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
-                            $("#results").append(
+                            $("#wresults").append(
                                 "<tr>" +
                                 "<td>" + data[i].tyontekijaID + "</td>" +
                                 "<td>" + data[i].nimi + "</td>" +
-                                "<td>" + "<a href='javascript:void(0);' class='edit'>Muokkaa</a>" + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='editw'>Muokkaa</a>" + "</td>" +
                                 "</tr>"
                             )
                         }
@@ -174,7 +174,7 @@ $(document).ready(function () {
     <div id="workerdiv">
         <br>
 
-        <table id="results"></table>
+        <table id="wresults"></table>
         <br>
         <button id="btnAddWorker" type="button" class="btn btn-primary">Lisää työntekijä</button>
 

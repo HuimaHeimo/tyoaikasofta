@@ -4,7 +4,7 @@ var sqlQuery;
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-    password: 'Kissa123',
+    password: '',
     database: 'tyoaika'
 });
 
@@ -93,8 +93,8 @@ module.exports =
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
-                    console.log("Data = " + JSON.stringify(results));
-                    console.log("Params = " + JSON.stringify(req.query));
+                    /*console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));*/
 
                     res.json(results);
                 }

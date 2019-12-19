@@ -33,16 +33,16 @@
 
         // Listaa kaikki projektit tauluun.
         function fetchProjects() {
-            $("#results").empty();
-            $('#results').html("<tr><th>ID</th><th>Projekti</th><th> </th></tr>");
+            $("#presults").empty();
+            $('#presults').html("<tr><th>ID</th><th>Projekti</th><th> </th></tr>");
             $.getJSON("http://127.0.0.1:3002/projects", function (data) {
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
-                            $("#results").append(
+                            $("#presults").append(
                                 "<tr>" +
                                 "<td>" + data[i].projektiID + "</td>" +
                                 "<td>" + data[i].nimi + "</td>" +
-                                "<td>" + "<a href='javascript:void(0);' class='edit'>Muokkaa</a>" + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='editp'>Muokkaa</a>" + "</td>" +
                                 "</tr>"
                             )
                         }
@@ -51,16 +51,16 @@
         };
         
         // Tallentaa muokkauspainiketta klikattaessa klikatun projektin id:n muuttujaan ja avaa muokkausdialogin.
-        $(document).on("click", "a.edit", function (e) {
+        $(document).on("click", "a.editp", function (e) {
                 e.preventDefault();
                 id = $(this).parent().prev().prev().text();
                 
-                openDialog();
+                openProjectDialog();
                 
             }); 
 
         // Avaa dialogin ja hakee valitun projektin tiedot tekstikenttiin
-        function openDialog() {
+        function openProjectDialog() {
                 $("#showProjectdlg").dialog({
                 modal: true,
                
@@ -128,7 +128,7 @@
 
         <br>
 
-        <table id="results"></table>
+        <table id="presults"></table>
         <br>
         <button id="btnAddProject" type="button" class="btn btn-primary">Lisää projekti</button>
     </div>
