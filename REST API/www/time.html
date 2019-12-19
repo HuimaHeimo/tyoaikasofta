@@ -31,11 +31,14 @@
 
     })
     */
-        function dateFormat($pvm1, $pvm2) {
+
+        // Laskee tuntien erotuksen kahdesta päivämäärästä
+        function calculateHours($pvm1, $pvm2) {
             var hours = Math.abs($pvm2 - $pvm1) / 36e5;
             return hours;
     }
 
+        // Hakee tietokannasta tunnit tauluun
         function fetchTimes() {
             $("#tresults").empty();
             $('#tresults').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th></tr>");
@@ -44,7 +47,7 @@
                         for (var i = 0; i < len; i++) {
                             var $pvm1 = new Date (data[i].aloitus);
                             var $pvm2 = new Date (data[i].lopetus);
-                            var hours = dateFormat($pvm1, $pvm2);
+                            var hours = calculateHours($pvm1, $pvm2);
                             $("#tresults").append(
                                 "<tr>" +
                                 "<td>" + data[i].aloitus + "</td>" +
@@ -58,21 +61,67 @@
                     });
         };
 
+        $("#btnAddTime").click(function (){
+            $(".chsWorker").empty();
+            getWorkers();
+            $("#timedialog").dialog();
+        })
+
+
+        $("#startingDatepicker").datepicker();
+        $("#endingDatepicker").datepicker();
+
+        function getWorkers() {
+            $.get("http://localhost:3002/workers", function (data, status) {
+                var $option = $('<option>').text("Valitse...").appendTo('.chsWorker');
+                $.each(data, function (i, item) {
+                    var $option = $('<option>').text(item.nimi).val(item.tyontekijaID).appendTo('.chsWorker');
+                })
+            }) 
+        }
+        
+
     })
 </script>
 
 
 <body>
-        <div id="timediv">
+    <div id="timediv">
+    
+        <br>
+    
+        <table id="tresults"></table>
+        <br>
+        <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
+    </div>
+    
+    <div id="timedialog" title="Lisää työsuoritus" style="display:none">
 
-                <br>
-        
-                <table id="tresults"></table>
-                <br>
-                <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
-        </div>
+            <label for "chooseProject">Valitse projekti: </label>
+            <select id="chooseProject">
+                <option class="chsProject"></option>
+            </select>
+            <br>
+            <label for "chooseWorker">Valitse työntekijä: </label>
+            <select id="chooseWorker">
+                <option class="chsWorker"></option>
+            </select>
+            <br>
+            Alkamisaika:
+            <br>
+            <br>
+            <p>Päivämäärä: <input type="text" id="startingDatepicker" size="15"></p>
+            <p>Kello: <input type='time' id="startingTime"/></p>
+            <br>
+            Päättymisaika:
+            <br>
+            <br>
+            <p>Päivämäärä: <input type="text" id="endingDatepicker" size="15"></p>
+            <p>Kello: <input type='time' id="endingTime"/></p>
+            <button id="sendTime" class="btn btn-primary">Lisää</button>
 
-        <p id="testip"></p>
+    
+    </div>
 </body>
 
 </html>
