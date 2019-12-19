@@ -17,16 +17,17 @@ let users = {
 module.exports =
     {
 
+        // Hakee kaikki projektit ja niihin liittyvät työntekijät työaikoineen. 
         fetchAll: function (req, res) {
             
-            if (req.query.tyoteID == "" || req.query.tyoteID == undefined) {
+            if (req.query.tyoteID == "" &&  req.query.proNimi == "") {
                 sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS " + 
                 "'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM ((tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID));"
             }
             else {
                 sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS " + 
                 "'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID " +
-                "WHERE tyoajat.tyoteID = " + req.query.tyoteID + ";";
+                "WHERE tyoajat.tyoteID LIKE '" + req.query.tyoteID + "%' AND projektit.nimi LIKE '" + req.query.proNimi + "%'" + ";";
             }
            
             
