@@ -4,7 +4,7 @@ var sqlQuery;
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-    password: '',
+    password: 'Kissa123',
     database: 'tyoaika'
 });
 
@@ -16,6 +16,26 @@ let users = {
 
 module.exports =
     {
+
+        fetchAll: function (req, res) {
+            
+            sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS 'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM ((tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID));"
+            
+            
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    /*console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));*/
+
+                    res.json(results);
+                }
+            });
+        },
+
         // Hakee kaikki projektit, jos parametrien arvot ovat tyhjiä. Mikäli eivät ole, rajataan vastaanotettujen
         // arvojen perusteella.
         fetchProjects: function (req, res) {
@@ -100,6 +120,8 @@ module.exports =
                 }
             });
         },
+
+        
 
         // Lisää uuden projektin ja tarkastaa, onko tarvittavat parametrit syötetty.
         createProject: function (req, res) {
