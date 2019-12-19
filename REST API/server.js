@@ -75,9 +75,11 @@ app.route('/times')
     .delete(controller.deleteTime);
 
 app.route('/Asiakas/:id')
-    .put(controller.update)
+    .put(controller.update);
     //.delete(controller.delete);
 
+app.route('/all')
+    .get(controller.fetchAll);
 
 app.get('/getuser', (req, res) => {
     console.log(req.cookies);
