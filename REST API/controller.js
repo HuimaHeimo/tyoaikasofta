@@ -19,7 +19,16 @@ module.exports =
 
         fetchAll: function (req, res) {
             
-            sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS 'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM ((tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID));"
+            if (req.query.tyoteID == "" || req.query.tyoteID == undefined) {
+                sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS " + 
+                "'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM ((tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID));"
+            }
+            else {
+                sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS " + 
+                "'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID " +
+                "WHERE tyoajat.tyoteID = " + req.query.tyoteID + ";";
+            }
+           
             
             
             connection.query(sqlQuery, function (error, results, fields) {
