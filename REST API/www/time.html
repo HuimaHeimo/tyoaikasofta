@@ -36,12 +36,12 @@
         function calculateHours($pvm1, $pvm2) {
             var hours = Math.abs($pvm2 - $pvm1) / 36e5;
             return hours;
-    }
+        }
 
         // Hakee tietokannasta tunnit tauluun
         function fetchTimes() {
             $("#tresults").empty();
-            $('#tresults').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th></tr>");
+            $('#tresults').html("<tr><th>ID</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
             $.getJSON("http://127.0.0.1:3002/times", function (data) {
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
@@ -50,9 +50,11 @@
                             var hours = calculateHours($pvm1, $pvm2);
                             $("#tresults").append(
                                 "<tr>" +
+                                "<td>" + data[i].tyoaikaID + "</td>" +
                                 "<td>" + data[i].aloitus + "</td>" +
                                 "<td>" + data[i].lopetus + "</td>" +
                                 "<td>" + hours + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
                                 "</tr>"
                             )
                         }
@@ -61,25 +63,94 @@
                     });
         };
 
+        // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään poistettavan kellotuksen avain.
+        var id = "";
+
+        // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
+        $(document).on("click", "a.deleteTime", function (e) {
+            e.preventDefault();
+            id = $(this).parent().prev().prev().prev().prev().text();
+            $.ajax({
+                url: 'http://localhost:3002/times',
+                method: 'DELETE',
+                data: {"tyoaikaID" : id}
+            })
+            setTimeout(() => {   fetchTimes(); }, 500);
+
+
+        }); 
+
+        // Avaa dialogin uudelle kellotukselle. Tyhjentää myös kentät, jos dialogia ei avata ensimmäistä kertaa.
         $("#btnAddTime").click(function (){
             $(".chsWorker").empty();
+            $(".chsProject").empty();
+            $("#startingDatepicker").empty();
+            $("#endingDatepicker").empty();
             getWorkers();
+            getProjects();
             $("#timedialog").dialog();
         })
 
 
-        $("#startingDatepicker").datepicker();
-        $("#endingDatepicker").datepicker();
+        $("#startingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $("#endingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        
+        if (!$.datepicker.initialized) {
+            $(document).mousedown($.datepicker._checkExternalClick);
+            $.datepicker.initialized = true;
+        }
 
+        // Hakee lisäys-dialogiin työntekijät kannasta
         function getWorkers() {
             $.get("http://localhost:3002/workers", function (data, status) {
                 var $option = $('<option>').text("Valitse...").appendTo('.chsWorker');
                 $.each(data, function (i, item) {
-                    var $option = $('<option>').text(item.nimi).val(item.tyontekijaID).appendTo('.chsWorker');
+                    $("#chooseWorker").append('<option value=' + item.tyontekijaID + '>' + item.nimi + '</option>');
                 })
             }) 
         }
-        
+
+        // Hakee lisäys-dialogiin projektit kannasta
+        function getProjects() {
+            $.get("http://localhost:3002/projects", function (data, status) {
+                var $option = $('<option>').text("Valitse...").appendTo('.chsProject');
+                $.each(data, function (i, item) {
+                    $("#chooseProject").append('<option value=' + item.projektiID + '>' + item.nimi + '</option>');
+                })
+            })
+        }
+
+
+        // Funktio kellotuksen lisäämiselle ja kenttien oikeellisuuden tarkistamiselle
+        $("#sendTime").click(function () {
+            if ($("#startingDatepicker").val() != "" && $("#startingTime").val() != "" && $("#endingDatepicker").val() != "" && $("#endingTime").val() != "" && $("#chooseWorker").val() != "Valitse..." && $("#chooseProject").val() != "Valitse...") {
+                
+                var $start = $("#startingDatepicker").val() + ' ' + $("#startingTime").val().replace(/\:/g, '-') + '-00';
+                var $end = $("#endingDatepicker").val() + ' ' + $("#endingTime").val().replace(/\:/g, '-') + '-00';
+                var $wid = $("#chooseWorker").val();
+                var $pid = $("#chooseProject").val();
+
+                // Tarkistaa, että lopetusajankohta on aloitusajankohdan jälkeen
+                if ($start > $end) {
+                    // todo tarkista kentät
+                    $("#testing").append("kellotusvirhe");
+                } else {
+                    $.post("http://localhost:3002/times", { "aloitus": $start, "lopetus": $end, "tyoteID": $wid, "proID": $pid });
+                    setTimeout(() => {   fetchTimes(); }, 500);
+                    $("#timedialog").dialog('close');
+                }
+
+
+            } else {
+
+                // todo: tarkista kentät
+                $("#testing").append("virhe");
+            }
+        })
 
     })
 </script>
@@ -122,6 +193,8 @@
 
     
     </div>
+
+    <p id="testing"></p>
 </body>
 
 </html>
