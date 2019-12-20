@@ -31,25 +31,30 @@
 
     })
     */
-        function dateFormat($pvm1, $pvm2) {
+
+        // Laskee tuntien erotuksen kahdesta päivämäärästä
+        function calculateHours($pvm1, $pvm2) {
             var hours = Math.abs($pvm2 - $pvm1) / 36e5;
             return hours;
-    }
+        }
 
+        // Hakee tietokannasta tunnit tauluun
         function fetchTimes() {
             $("#tresults").empty();
-            $('#tresults').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th></tr>");
+            $('#tresults').html("<tr><th>ID</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
             $.getJSON("http://127.0.0.1:3002/times", function (data) {
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
                             var $pvm1 = new Date (data[i].aloitus);
                             var $pvm2 = new Date (data[i].lopetus);
-                            var hours = dateFormat($pvm1, $pvm2);
+                            var hours = calculateHours($pvm1, $pvm2);
                             $("#tresults").append(
                                 "<tr>" +
+                                "<td>" + data[i].tyoaikaID + "</td>" +
                                 "<td>" + data[i].aloitus + "</td>" +
                                 "<td>" + data[i].lopetus + "</td>" +
                                 "<td>" + hours + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
                                 "</tr>"
                             )
                         }
@@ -58,21 +63,138 @@
                     });
         };
 
+        // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään poistettavan kellotuksen avain.
+        var id = "";
+
+        // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
+        $(document).on("click", "a.deleteTime", function (e) {
+            e.preventDefault();
+            id = $(this).parent().prev().prev().prev().prev().text();
+            $.ajax({
+                url: 'http://localhost:3002/times',
+                method: 'DELETE',
+                data: {"tyoaikaID" : id}
+            })
+            setTimeout(() => {   fetchTimes(); }, 500);
+
+
+        }); 
+
+        // Avaa dialogin uudelle kellotukselle. Tyhjentää myös kentät, jos dialogia ei avata ensimmäistä kertaa.
+        $("#btnAddTime").click(function (){
+            $(".chsWorker").empty();
+            $(".chsProject").empty();
+            $("#startingDatepicker").empty();
+            $("#endingDatepicker").empty();
+            getWorkers();
+            getProjects();
+            $("#timedialog").dialog();
+        })
+
+
+        $("#startingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        $("#endingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+        
+        if (!$.datepicker.initialized) {
+            $(document).mousedown($.datepicker._checkExternalClick);
+            $.datepicker.initialized = true;
+        }
+
+        // Hakee lisäys-dialogiin työntekijät kannasta
+        function getWorkers() {
+            $.get("http://localhost:3002/workers", function (data, status) {
+                var $option = $('<option>').text("Valitse...").appendTo('.chsWorker');
+                $.each(data, function (i, item) {
+                    $("#chooseWorker").append('<option value=' + item.tyontekijaID + '>' + item.nimi + '</option>');
+                })
+            }) 
+        }
+
+        // Hakee lisäys-dialogiin projektit kannasta
+        function getProjects() {
+            $.get("http://localhost:3002/projects", function (data, status) {
+                var $option = $('<option>').text("Valitse...").appendTo('.chsProject');
+                $.each(data, function (i, item) {
+                    $("#chooseProject").append('<option value=' + item.projektiID + '>' + item.nimi + '</option>');
+                })
+            })
+        }
+
+
+        // Funktio kellotuksen lisäämiselle ja kenttien oikeellisuuden tarkistamiselle
+        $("#sendTime").click(function () {
+            if ($("#startingDatepicker").val() != "" && $("#startingTime").val() != "" && $("#endingDatepicker").val() != "" && $("#endingTime").val() != "" && $("#chooseWorker").val() != "Valitse..." && $("#chooseProject").val() != "Valitse...") {
+                
+                var $start = $("#startingDatepicker").val() + ' ' + $("#startingTime").val().replace(/\:/g, '-') + '-00';
+                var $end = $("#endingDatepicker").val() + ' ' + $("#endingTime").val().replace(/\:/g, '-') + '-00';
+                var $wid = $("#chooseWorker").val();
+                var $pid = $("#chooseProject").val();
+
+                // Tarkistaa, että lopetusajankohta on aloitusajankohdan jälkeen
+                if ($start > $end) {
+                    // todo tarkista kentät
+                    $("#testing").append("kellotusvirhe");
+                } else {
+                    $.post("http://localhost:3002/times", { "aloitus": $start, "lopetus": $end, "tyoteID": $wid, "proID": $pid });
+                    setTimeout(() => {   fetchTimes(); }, 500);
+                    $("#timedialog").dialog('close');
+                }
+
+
+            } else {
+
+                // todo: tarkista kentät
+                $("#testing").append("virhe");
+            }
+        })
+
     })
 </script>
 
 
 <body>
-        <div id="timediv">
+    <div id="timediv">
+    
+        <br>
+    
+        <table id="tresults"></table>
+        <br>
+        <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
+    </div>
+    
+    <div id="timedialog" title="Lisää työsuoritus" style="display:none">
 
-                <br>
-        
-                <table id="tresults"></table>
-                <br>
-                <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
-        </div>
+            <label for "chooseProject">Valitse projekti: </label>
+            <select id="chooseProject">
+                <option class="chsProject"></option>
+            </select>
+            <br>
+            <label for "chooseWorker">Valitse työntekijä: </label>
+            <select id="chooseWorker">
+                <option class="chsWorker"></option>
+            </select>
+            <br>
+            Alkamisaika:
+            <br>
+            <br>
+            <p>Päivämäärä: <input type="text" id="startingDatepicker" size="15"></p>
+            <p>Kello: <input type='time' id="startingTime"/></p>
+            <br>
+            Päättymisaika:
+            <br>
+            <br>
+            <p>Päivämäärä: <input type="text" id="endingDatepicker" size="15"></p>
+            <p>Kello: <input type='time' id="endingTime"/></p>
+            <button id="sendTime" class="btn btn-primary">Lisää</button>
 
-        <p id="testip"></p>
+    
+    </div>
+
+    <p id="testing"></p>
 </body>
 
 </html>

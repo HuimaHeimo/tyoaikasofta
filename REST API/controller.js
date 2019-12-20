@@ -4,7 +4,7 @@ var sqlQuery;
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-    password: 'Kissa123',
+    password: '',
     database: 'tyoaika'
 });
 
@@ -225,15 +225,20 @@ module.exports =
 
         // Lisää uuden kellotuksen ja tarkastaa, onko tarvittavat parametrit syötetty.
         createTime: function (req, res) {
-            if (req.query.nimi == "") {
+            var aloitus = req.body.aloitus;
+            var lopetus = req.body.lopetus;
+            var tyoteID = req.body.tyoteID;
+            var proID = req.body.proID;
+            // muokattava. testiä...
+            if (aloitus == "") {
                 console.log("Virhe lisattaessa uutta kellotusta, nimi puuttuu");
                 res.send({ "status": 500, "error": error, "response": null });
                 
             }
             else {
                 sqlQuery = "INSERT INTO tyoajat (tyoteID, proID, aloitus, lopetus)" + " " +
-                    "VALUES " + "(" + "'" + req.query.tyoteID + "'" + "," 
-                    + "'" + req.query.proID + "'" + "," + "'" + req.query.aloitus + "'" + "," + "'" + req.query.lopetus + "'" + ")" + ";";
+                    "VALUES " + "(" + "'" + tyoteID + "'" + "," 
+                    + "'" + proID + "'" + "," + "'" + aloitus + "'" + "," + "'" + lopetus + "'" + ")" + ";";
 
             }
 
@@ -329,12 +334,15 @@ module.exports =
 
         // Poistaa kellotuksen ID:n perusteella
         deleteTime: function (req, res) {
+            var id = req.body.tyoaikaID;
+
             if (req.query.ID == "") {
                 
             }
             else {
-                sqlQuery = "DELETE FROM projektit WHERE tyoaikaID=" + "'" + req.query.tyoaikaID + "'" + ";";
+                sqlQuery = "DELETE FROM tyoajat WHERE tyoaikaID=" + "'" + id + "'" + ";";
             }
+            console.log(sqlQuery);
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe poistettaessa dataa tyoajat-taulusta, syy: " + error);
