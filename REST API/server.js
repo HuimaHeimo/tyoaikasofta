@@ -60,6 +60,8 @@ app.route('/project/muokkaa')
 app.route('/login')
     .post(controller.login);
    
+app.route('/hours')
+    .get(controller.fetchHours);
 
 app.route('/workers')
     .get(controller.fetchWorkers)

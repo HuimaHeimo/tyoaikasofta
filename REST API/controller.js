@@ -4,7 +4,7 @@ var sqlQuery;
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-    password: '',
+    password: 'Kissa123',
     database: 'tyoaika'
 });
 
@@ -39,6 +39,28 @@ module.exports =
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    /*console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));*/
+
+                    res.json(results);
+                }
+            });
+        },
+
+        fetchHours: function (req, res) {
+            if (req.query.tyoteID == "" || req.query.tyoteID == undefined) {
+                
+            }
+            else {
+                sqlQuery = "SELECT aloitus, lopetus FROM tyoajat WHERE tyoteID='" + req.query.tyoteID + "' " 
+                   
+            }
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe haettaessa tunteja tyoajat-taulusta, syy: " + error);
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {

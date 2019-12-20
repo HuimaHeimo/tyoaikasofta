@@ -41,6 +41,23 @@ body {
     color: white;
   }
 
+  .topnav {
+    overflow: hidden;
+    background-color: rgb(23, 99, 241);
+    margin-left: 0%;
+    margin-right: 0%;
+    position:relative;
+  }
+  
+  .footer {
+    position: absolute; /* Korjaa niin, ettei mene sekaisin ikkunan korkeutta muutettaessa */
+    bottom: 0;
+    width: 100%;
+    height: 100px; /* Set the fixed height of the footer here */
+    line-height: 60px; /* Vertically center the text there */
+    background-color: rgb(99, 145, 245);;
+  }
+
   .main {
       text-align: center;
   }
