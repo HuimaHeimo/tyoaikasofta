@@ -5,12 +5,12 @@ body {
 
   .banner {
     background-image: url("../Images/Cloud.jpg");
-    height: 50%;
+    height: 75%;
     background-position: right;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
-    padding: 75 px;
+    padding: 75px;
   }
   
   .topnav {
