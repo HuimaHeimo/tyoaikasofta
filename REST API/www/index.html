@@ -15,24 +15,36 @@
 
 <script>
 
-    $(function () {
+$(document).ready(function () {
 
-        $("#workers").click(function fetchWorkers() {
-            $("#maindiv").empty();
-            $("#maindiv").load("worker.html");
-        })
-
-        $("#projects").click(function fetchProjects() {
-            $("#maindiv").empty();
-            $("#maindiv").load("project.html");
-        })
-
-        $("#times").click(function fetchProjects() {
-            $("#maindiv").empty();
-            $("#maindiv").load("time.html");
-        })
-
+    $("#workers").click(function fetchWorkers() {  
+        $("#maindiv").empty();
+        $("#maindiv").load("worker.html");
     });
+
+    $("#projects").click(function fetchProjects() {
+        $("#maindiv").empty();
+        $("#maindiv").load("project.html");   
+    });
+
+    $("#times").click(function fetchProjects() {
+        $("#maindiv").empty();
+        $("#maindiv").load("time.html");
+    });
+
+    $("#main").click(function () {
+        loadMain();
+    });
+
+    function loadMain() {
+        $("#maindiv").empty();
+        $("#maindiv").load("main.html");
+    }
+
+    loadMain();
+    
+});
+    
 </script>
 
 
@@ -52,12 +64,13 @@
     <div class="main" id="maindiv"> <!--
         <h2>Tähän tulee jotain sisältöä...</h2>
         <p>...elikkäst taulukko jotenkin hienosti bootstrapilla sipisteltynä.</p>
+        <table id="mainMenu"></table>
+         -->
         
-        <table id="results"></table>
 
         <br>
         
-        <button id="btnAdd" type="button" class="btn btn-info">Lisää</button> -->
+        <!-- <button id="btnAdd" type="button" class="btn btn-info">Lisää</button> -->
 
 
     </div>

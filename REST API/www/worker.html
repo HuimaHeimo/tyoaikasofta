@@ -37,17 +37,17 @@ $(document).ready(function () {
         var id = "";
 
         // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
-        $(document).on("click", "a.editw", function (e) {
+        $(document).on("click", "a.edit", function (e) {
                 e.preventDefault();
                 id = $(this).parent().prev().prev().text();
                 
-                openWorkerDialog();
+                openDialog();
                 
             }); 
 
 
             // Avaa dialogin ja hakee valitun asiakkaan tiedot tekstikenttiin
-            function openWorkerDialog() {
+            function openDialog() {
                 $("#showWorkerdlg").dialog({
                 width: 430,
                 height: 360,
@@ -84,7 +84,7 @@ $(document).ready(function () {
                                 "<tr>" +
                                 "<td>" + data[i].tyontekijaID + "</td>" +
                                 "<td>" + data[i].nimi + "</td>" +
-                                "<td>" + "<a href='javascript:void(0);' class='editw'>Muokkaa</a>" + "</td>" +
+                                "<td>" + "<a href='javascript:void(0);' class='edit'>Muokkaa</a>" + "</td>" +
                                 "</tr>"
                             )
                         }
@@ -171,6 +171,8 @@ $(document).ready(function () {
 </script>
 
 <body>
+
+    <!---->
     <div id="workerdiv">
         <br>
 
