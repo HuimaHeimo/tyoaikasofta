@@ -21,16 +21,20 @@ module.exports =
         fetchAll: function (req, res) {
             
             if (req.query.tyoteID == "" &&  req.query.proNimi == "") {
-                sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS " + 
-                "'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM ((tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID));"
+                sqlQuery = "SELECT projektit.nimi, tyontekijat.nimi AS tyotenimi, tyoajat.aloitus" + 
+                ", tyoajat.lopetus FROM tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID;"
+            }
+            else if (req.query.tyoteID == undefined && req.query.proNimi == undefined) {
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyontekijat.nimi AS tyotenimi, tyoajat.aloitus, " + 
+                "tyoajat.lopetus FROM ((tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID));"
             }
             else {
-                sqlQuery = "SELECT projektit.nimi AS 'Projekti', tyontekijat.nimi AS 'Työntekijän nimi', tyoajat.aloitus AS " + 
-                "'Suoritteen aloitus', tyoajat.lopetus AS 'Suoritteen lopetus' FROM tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID " +
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyontekijat.nimi AS tyotenimi, tyoajat.aloitus, " + 
+                "tyoajat.lopetus AS FROM tyoajat INNER JOIN tyontekijat ON tyoajat.tyoteID = tyontekijat.tyontekijaID INNER JOIN projektit ON tyoajat.proID = projektit.projektiID " +
                 "WHERE tyoajat.tyoteID LIKE '" + req.query.tyoteID + "%' AND projektit.nimi LIKE '" + req.query.proNimi + "%'" + ";";
             }
            
-            
+            console.log(sqlQuery);
             
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {

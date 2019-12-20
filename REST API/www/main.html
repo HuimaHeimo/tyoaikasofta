@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Työajanhallintasovellus</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<script>
+    $(document).ready(function () {
+        
+        // Listaa kaiken, mitä kannassa on, siististi tauluun.
+        function fetchAll() {
+        $("#allOrNothing").empty();
+        $('#allOrNothing').html("<tr><th>Projekti</th><th>Työntekijä</th><th>Aloitus</th><th>Lopetus</th></tr>");
+        $.getJSON("http://127.0.0.1:3002/all", function (data) {     
+            var len = data.length;
+            for (var i = 0; i < len; i++) {        
+                $("#allOrNothing").append(      
+                "<tr>" +
+                "<td>" + data[i].pronimi + "</td>" +
+                "<td>" + data[i].tyotenimi + "</td>" +
+                "<td>" + data[i].aloitus + "</td>" +
+                "<td>" + data[i].lopetus + "</td>" +
+                "</tr>"         
+                )        
+            }
+        })};
+
+        fetchAll();
+    });
+
+    
+</script>
+
+<body>
+
+    <!--Taulukko kaikkien tietojen listaamista varten-->
+    <div id="alldiv">
+        <h1>Yleisnäkymä</h1>
+        <br>
+
+        <table id="allOrNothing"></table>
+        <br>
+    </div>
+
+
+
+</body>
+
+</html>
