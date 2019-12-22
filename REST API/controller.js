@@ -139,10 +139,15 @@ module.exports =
             && req.query.lopetus == undefined) {
                 sqlQuery = "SELECT * FROM tyoajat";
             }
-            else {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoaikaID LIKE '" + req.query.tyoaikaID + "%' " +
-                    "AND tyoteID LIKE '" + req.query.tyoteID + "%' " + "AND proID LIKE '" + req.query.proID + "%' ";
+            else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID != undefined && req.query.aloitus == undefined
+                && req.query.lopetus == undefined) {
+                    sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
+                }
+            else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "" && req.query.aloitus == ""
+            && req.query.lopetus == "") {
+                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
             }
+           
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
