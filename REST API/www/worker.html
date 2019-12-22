@@ -16,17 +16,7 @@
 <script>
 
 $(document).ready(function () {
-        /*
-                // dialogi aukeaa, kun klikataan tablesta tiettyä tekijää
-                    $("#results").delegate("tr", "click", function () {
-                        $("#showWorkerdlg").dialog();
-                        $.get("http://localhost:3002/workers", tyontekijaID = 5);
-                        $.each(data, function (i, item) {
-                            $("#testx").text(item.nimi);
-                        })
-                        
-                });
-        */
+
 
         // dialogi auki työntekijän lisäämistä varten
         $("#btnAddWorker").click(function () {
@@ -52,14 +42,6 @@ $(document).ready(function () {
                 width: 430,
                 height: 360,
                 modal: true,
-               buttons: {
-                    Peruuta: function () {
-                        $(this).dialog('close');
-                    }
-
-                    }
-
-
                 });
 
                 // Hakee valitun asiakkaan tiedot tekstikenttiin.
@@ -90,47 +72,9 @@ $(document).ready(function () {
                         }
                     
                     });
-            /*
-            $.get("http://localhost:3002/workers").done(function (data) {
-               
-           $.each(data, function (i, item) {
-                var $tr = $('<tr>').append(
-                    $('<td>').text(item.tyontekijaID), // tämä vain testaamisen ja selkeyden vuoksi, ei tule näkymään lopullisessa layoutissa
-                    $('<td>').text(item.nimi),
-                    $('<button>').val(item.tyontekijaID).text('Muokkaa').attr("id", "muokkausnappi").click(function () {
-                        
-                        var id = this.parent().prev().prev().text();
-                        $.getJSON("http://127.0.0.1:3002/worker?tyontekijaID=" + id + "?nimi=", function (data) {
-                            
-                            $("#enimi").val(data[0].nimi);
-                            $("#workerid").val(data[0].tyontekijaID);
-            
-                        });
-                        $("#showWorkerdlg").dialog();
-                    })
-                ).appendTo("#results")
-            })
-        }) */
         };
 
         fetchWorkers();
-
-        // dialogi aukeaa, kun klikataan tablesta tiettyä tekijää
-        /*
-        $("#results").delegate("tr", "click", function () {
-            $("#showWorkerdlg").dialog();
-            
-        }); */
-
-       /* $("#results").on("click", function () {
-            $("#showWorkerdlg").dialog();
-            id = $(this).parent().text();
-            $.getJSON("http://127.0.0.1:3002/worker?tyontekijaID=" + id + "?nimi=", function (data) {
-                $("#enimi").val(data[0].NIMI);
-                $("#workerid").val(data[0].OSOITE);
-            });  
-        }); */
-
 
         // Lisää työntekijän ja sulkee dialogin.
         $("#send").click(function () {
