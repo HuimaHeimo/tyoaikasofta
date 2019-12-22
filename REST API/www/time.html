@@ -136,8 +136,7 @@
 
                 // Tarkistaa, että lopetusajankohta on aloitusajankohdan jälkeen
                 if ($start > $end) {
-                    // todo tarkista kentät
-                    $("#testing").append("kellotusvirhe");
+                    alert("Virhe. Lopetusajankohta ei voi olla aloitusajankohtaa suurempi.");
                 } else {
                     $.post("http://localhost:3002/times", { "aloitus": $start, "lopetus": $end, "tyoteID": $wid, "proID": $pid });
                     setTimeout(() => {   fetchTimes(); }, 500);
@@ -146,9 +145,7 @@
 
 
             } else {
-
-                // todo: tarkista kentät
-                $("#testing").append("virhe");
+                alert("Virhe. Tarkista kentät.");
             }
         })
 
