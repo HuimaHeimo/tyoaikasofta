@@ -16,10 +16,24 @@
 <script>
     $(document).ready(function () {
 
+        /* Initialise the date picker */
+        if (!$.datepicker.initialized) {
+            $(document).mousedown($.datepicker._checkExternalClick);
+            $.datepicker.initialized = true;
+        }
+
+        $("#startingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $("#endingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
         // Apumuuttuja työaikojen suodatusta varten.
         var projectID = "";
         var workerID = "";
-        
+
         fetchTimes();
 
         /*
@@ -41,7 +55,7 @@
             var hours = Math.abs($pvm2 - $pvm1) / 36e5;
             return hours;
         }
-
+        // 2019-12-14T14:00:00.000Z malli, poista lopuksi
         // Hakee tietokannasta tunnit tauluun
         function fetchTimes() {
             $("#tresults").empty();
@@ -63,12 +77,13 @@
                             )
                         }
 
-                    
-                    });
+
+            });
         };
 
         // Hakee suodatuksen perusteella ajastukset tauluun.
         $("#suodataAjat").click(function () {
+            $("#timeNotify").html("")
             if ($("#tyotevalinta").val() != "") {
                 $("#tresults").empty();
                 $('#tresults').html("<tr><th>Projekti</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
@@ -92,12 +107,16 @@
                     }
                     $("#resultsAdvanced").empty();
                     $('#resultsAdvanced').html("<tr><th> </th></tr>");
-                    if ($("#month").val() != ""){
+                    if ($("#month").val() != "") {
                         $("#resultsAdvanced").append(
                             "<tr>" +
                             "<td>" + $("#month option:selected").text() + "n työtunnit yhteensä: " + hourscount + "</td>" +
-                            "</tr>"
+                            "</tr>"    
                         )
+                        if (hourscount > 160) {
+                        $("#timeNotify").append("Säännöllisen työn kuukausittainen enimmäismäärä ylittyy!")
+                        }
+
                     } else {
                         $("#resultsAdvanced").append(
                             "<tr>" +
@@ -121,8 +140,8 @@
                         $("#tresults").append(
                             "<tr>" +
                             "<td>" + data[i].tyoaikaID + "</td>" +
-                            "<td>" + data[i].aloitus + "</td>" +
-                            "<td>" + data[i].lopetus + "</td>" +
+                            "<td>" + data[i].aloitus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
+                            "<td>" + data[i].lopetus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
                             "<td>" + hours + "</td>" +
                             "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
                             "</tr>"
@@ -143,36 +162,23 @@
             $.ajax({
                 url: 'http://localhost:3002/times',
                 method: 'DELETE',
-                data: {"tyoaikaID" : id}
+                data: { "tyoaikaID": id }
             })
-            setTimeout(() => {   fetchTimes(); }, 500);
+            setTimeout(() => { fetchTimes(); }, 500);
 
 
-        }); 
+        });
 
         // Avaa dialogin uudelle kellotukselle. Tyhjentää myös kentät, jos dialogia ei avata ensimmäistä kertaa.
-        $("#btnAddTime").click(function (){
+        $("#btnAddTime").click(function () {
             $(".chsWorker").empty();
             $(".chsProject").empty();
             $("#startingDatepicker").empty();
             $("#endingDatepicker").empty();
             getWorkers();
             getProjects();
-            setTimeout(() => {   $("#timedialog").dialog(); }, 1000);
+            setTimeout(() => { $("#timedialog").dialog(); }, 1000);
         })
-
-
-        $("#startingDatepicker").datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-        $("#endingDatepicker").datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-        
-        if (!$.datepicker.initialized) {
-            $(document).mousedown($.datepicker._checkExternalClick);
-            $.datepicker.initialized = true;
-        }
 
         // Hakee lisäys-dialogiin työntekijät kannasta
         function getWorkers() {
@@ -181,7 +187,7 @@
                 $.each(data, function (i, item) {
                     $("#chooseWorker").append('<option value=' + item.tyontekijaID + '>' + item.nimi + '</option>');
                 })
-            }) 
+            })
         }
 
         // Hakee lisäys-dialogiin projektit kannasta
@@ -198,7 +204,7 @@
         // Funktio kellotuksen lisäämiselle ja kenttien oikeellisuuden tarkistamiselle
         $("#sendTime").click(function () {
             if ($("#startingDatepicker").val() != "" && $("#startingTime").val() != "" && $("#endingDatepicker").val() != "" && $("#endingTime").val() != "" && $("#chooseWorker").val() != "Valitse..." && $("#chooseProject").val() != "Valitse...") {
-                
+
                 var $start = $("#startingDatepicker").val() + ' ' + $("#startingTime").val().replace(/\:/g, '-') + '-00';
                 var $end = $("#endingDatepicker").val() + ' ' + $("#endingTime").val().replace(/\:/g, '-') + '-00';
                 var $wid = $("#chooseWorker").val();
@@ -209,7 +215,7 @@
                     alert("Virhe. Lopetusajankohta ei voi olla aloitusajankohtaa suurempi.");
                 } else {
                     $.post("http://localhost:3002/times", { "aloitus": $start, "lopetus": $end, "tyoteID": $wid, "proID": $pid });
-                    setTimeout(() => {   fetchTimes(); }, 500);
+                    setTimeout(() => { fetchTimes(); }, 500);
                     $("#timedialog").dialog('close');
                 }
 
@@ -230,10 +236,10 @@
         */
         // Lisää Työntekijät dropdown-valikkoon suodatustoimintoa varten.
         $.getJSON("http://127.0.0.1:3002/workers", function (obj) {
-                $.each(obj, function (key, value) {
-                    $("#tyotevalinta").append($("<option></option>").val(value.tyontekijaID).html(value.nimi));
-                });
-            
+            $.each(obj, function (key, value) {
+                $("#tyotevalinta").append($("<option></option>").val(value.tyontekijaID).html(value.nimi));
+            });
+
         });
         /*
         // Pitää projectID-muuttujaa ajan tasalla.
@@ -245,7 +251,7 @@
         $("#tyotevalinta").change(function () {
             workerID = $("#tyotevalinta").val();
         });
-        
+
 
     })
 </script>
@@ -253,17 +259,19 @@
 
 <body>
     <div id="timediv">
-    
+
         <br>
-    
+
         <table id="tresults"></table>
         <br>
         <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
         <br>
         <br>
         <br>
-    <!--Suodata projektilla: <select id="provalinta"><option value=""></option></select> -->  
-        Suodata työntekijällä: <select id="tyotevalinta"><option value=""></option></select>
+        <!--Suodata projektilla: <select id="provalinta"><option value=""></option></select> -->
+        Suodata työntekijällä: <select id="tyotevalinta">
+            <option value=""></option>
+        </select>
         Vuosi: <select id="year">
             <option value="" selected></option>
             <option value="2018">2018</option>
@@ -290,36 +298,36 @@
     </div>
     <br>
     <table id="resultsAdvanced"></table>
-    
+    <br>
+    <p id="timeNotify"></p>
+
     <div id="timedialog" title="Lisää työsuoritus" style="display:none">
 
-            <label for "chooseProject">Valitse projekti: </label>
-            <select id="chooseProject">
-                <option class="chsProject"></option>
-            </select>
-            <br>
-            <label for "chooseWorker">Valitse työntekijä: </label>
-            <select id="chooseWorker">
-                <option class="chsWorker"></option>
-            </select>
-            <br>
-            Alkamisaika:
-            <br>
-            <br>
-            <p>Päivämäärä: <input type="text" id="startingDatepicker" size="15"></p>
-            <p>Kello: <input type='time' id="startingTime"/></p>
-            <br>
-            Päättymisaika:
-            <br>
-            <br>
-            <p>Päivämäärä: <input type="text" id="endingDatepicker" size="15"></p>
-            <p>Kello: <input type='time' id="endingTime"/></p>
-            <button id="sendTime" class="btn btn-primary">Lisää</button>
+        <label for "chooseProject">Valitse projekti: </label>
+        <select id="chooseProject">
+            <option class="chsProject"></option>
+        </select>
+        <br>
+        <label for "chooseWorker">Valitse työntekijä: </label>
+        <select id="chooseWorker">
+            <option class="chsWorker"></option>
+        </select>
+        <br>
+        Alkamisaika:
+        <br>
+        <br>
+        <p>Päivämäärä: <input type="text" id="startingDatepicker" size="15"></p>
+        <p>Kello: <input type='time' id="startingTime" /></p>
+        <br>
+        Päättymisaika:
+        <br>
+        <br>
+        <p>Päivämäärä: <input type="text" id="endingDatepicker" size="15"></p>
+        <p>Kello: <input type='time' id="endingTime" /></p>
+        <button id="sendTime" class="btn btn-primary">Lisää</button>
 
-    
+
     </div>
-
-    <p id="testing"></p>
 </body>
 
 </html>
