@@ -16,6 +16,10 @@
 <script>
     $(document).ready(function () {
 
+        // Apumuuttuja työaikojen suodatusta varten.
+        var projectID = "";
+        var workerID = "";
+        
         fetchTimes();
 
         /*
@@ -62,6 +66,29 @@
                     
                     });
         };
+
+        // Hakee suodatuksen perusteella ajastukset tauluun.
+        $("#suodataAjat").click(function () {
+            $("#tresults").empty();
+            $('#tresults').html("<tr><th>ID</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
+            $.getJSON("http://127.0.0.1:3002/times?proID=" + projectID + "&tyoteID=" + workerID, function (data) {
+                var len = data.length;         
+                for (var i = 0; i < len; i++) {    
+                    var $pvm1 = new Date (data[i].aloitus);
+                    var $pvm2 = new Date (data[i].lopetus);
+                    var hours = calculateHours($pvm1, $pvm2);
+                    $("#tresults").append(             
+                    "<tr>" +     
+                        "<td>" + data[i].tyoaikaID + "</td>" +      
+                        "<td>" + data[i].aloitus + "</td>" +
+                        "<td>" + data[i].lopetus + "</td>" +
+                        "<td>" + hours + "</td>" +
+                        "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
+                        "</tr>"     
+                        )            
+                    }       
+                });
+        });
 
         // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään poistettavan kellotuksen avain.
         var id = "";
@@ -149,6 +176,34 @@
             }
         })
 
+        
+        // Lisää projektit dropdown-valikkoon suodatustoimintoa varten.
+        $.getJSON("http://127.0.0.1:3002/projects", function (obj) {
+                $.each(obj, function (key, value) {
+                    $("#provalinta").append($("<option></option>").val(value.projektiID).html(value.nimi));
+                });
+            
+        });
+ 
+        // Lisää Työntekijät dropdown-valikkoon suodatustoimintoa varten.
+        $.getJSON("http://127.0.0.1:3002/workers", function (obj) {
+                $.each(obj, function (key, value) {
+                    $("#tyotevalinta").append($("<option></option>").val(value.tyontekijaID).html(value.nimi));
+                });
+            
+        });
+        
+        // Pitää projectID-muuttujaa ajan tasalla.
+        $("#provalinta").change(function () {
+            projectID = $("#provalinta").val();
+        });
+
+        // Pitää workerID-muuttujaa ajan tasalla.
+        $("#tyotevalinta").change(function () {
+            workerID = $("#tyotevalinta").val();
+        });
+        
+
     })
 </script>
 
@@ -161,6 +216,11 @@
         <table id="tresults"></table>
         <br>
         <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
+        <br>
+        Suodata projektilla: <select id="provalinta"><option value=""></option></select>
+        Suodata työntekijällä: <select id="tyotevalinta"><option value=""></option></select>
+        <button id="suodataAjat">Suodata</button>
+
     </div>
     
     <div id="timedialog" title="Lisää työsuoritus" style="display:none">

@@ -63,6 +63,9 @@ app.route('/login')
 app.route('/hours')
     .get(controller.fetchHours);
 
+app.route('/hours/limit')
+    .get(controller.limitTimes);
+
 app.route('/workers')
     .get(controller.fetchWorkers)
     .post(controller.createWorker)
