@@ -69,25 +69,68 @@
 
         // Hakee suodatuksen perusteella ajastukset tauluun.
         $("#suodataAjat").click(function () {
-            $("#tresults").empty();
-            $('#tresults').html("<tr><th>ID</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
-            $.getJSON("http://127.0.0.1:3002/times?proID=" + projectID + "&tyoteID=" + workerID, function (data) {
-                var len = data.length;         
-                for (var i = 0; i < len; i++) {    
-                    var $pvm1 = new Date (data[i].aloitus);
-                    var $pvm2 = new Date (data[i].lopetus);
-                    var hours = calculateHours($pvm1, $pvm2);
-                    $("#tresults").append(             
-                    "<tr>" +     
-                        "<td>" + data[i].tyoaikaID + "</td>" +      
-                        "<td>" + data[i].aloitus + "</td>" +
-                        "<td>" + data[i].lopetus + "</td>" +
-                        "<td>" + hours + "</td>" +
-                        "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
-                        "</tr>"     
-                        )            
-                    }       
+            if ($("#tyotevalinta").val() != "") {
+                $("#tresults").empty();
+                $('#tresults').html("<tr><th>ID</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
+                $.getJSON("http://127.0.0.1:3002/hours/limit?tyoteID=" + workerID + "&kuukausi=" + $("#month").val() + "&vuosi=" + $("#year").val(), function (data) {
+                    var len = data.length;
+                    var hourscount = 0;
+                    for (var i = 0; i < len; i++) {
+                        var $pvm1 = new Date(data[i].aloitus);
+                        var $pvm2 = new Date(data[i].lopetus);
+                        var hours = calculateHours($pvm1, $pvm2);
+                        hourscount = hourscount + hours;
+                        $("#tresults").append(
+                            "<tr>" +
+                            "<td>" + data[i].tyoaikaID + "</td>" +
+                            "<td>" + data[i].aloitus + "</td>" +
+                            "<td>" + data[i].lopetus + "</td>" +
+                            "<td>" + hours + "</td>" +
+                            "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
+                            "</tr>"
+                        )
+                    }
+                    $("#resultsAdvanced").empty();
+                    $('#resultsAdvanced').html("<tr><th> </th></tr>");
+                    if ($("#month").val() != ""){
+                        $("#resultsAdvanced").append(
+                            "<tr>" +
+                            "<td>" + $("#month option:selected").text() + "n työtunnit yhteensä: " + hourscount + "</td>" +
+                            "</tr>"
+                        )
+                    } else {
+                        $("#resultsAdvanced").append(
+                            "<tr>" +
+                            "<td>" + "Työtunnit yhteensä: " + hourscount + "</td>" +
+                            "</tr>"
+                        )
+                    }
                 });
+            }
+            else {
+                $("#resultsAdvanced").empty();
+                $('#resultsAdvanced').html("");
+                $("#tresults").empty();
+                $('#tresults').html("<tr><th>ID</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
+                $.getJSON("http://127.0.0.1:3002/hours/limit?tyoteID=" + workerID + "&kuukausi=" + $("#month").val() + "&vuosi=" + $("#year").val(), function (data) {
+                    var len = data.length;
+                    for (var i = 0; i < len; i++) {
+                        var $pvm1 = new Date(data[i].aloitus);
+                        var $pvm2 = new Date(data[i].lopetus);
+                        var hours = calculateHours($pvm1, $pvm2);
+                        $("#tresults").append(
+                            "<tr>" +
+                            "<td>" + data[i].tyoaikaID + "</td>" +
+                            "<td>" + data[i].aloitus + "</td>" +
+                            "<td>" + data[i].lopetus + "</td>" +
+                            "<td>" + hours + "</td>" +
+                            "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
+                            "</tr>"
+                        )
+                    }
+                });
+            }
+
         });
 
         // Apumuuttuja muokkausta ja poistoa varten. Muuttujaan säilötään poistettavan kellotuksen avain.
@@ -115,7 +158,7 @@
             $("#endingDatepicker").empty();
             getWorkers();
             getProjects();
-            $("#timedialog").dialog();
+            setTimeout(() => {   $("#timedialog").dialog(); }, 1000);
         })
 
 
@@ -176,7 +219,7 @@
             }
         })
 
-        
+        /*
         // Lisää projektit dropdown-valikkoon suodatustoimintoa varten.
         $.getJSON("http://127.0.0.1:3002/projects", function (obj) {
                 $.each(obj, function (key, value) {
@@ -184,7 +227,7 @@
                 });
             
         });
- 
+        */
         // Lisää Työntekijät dropdown-valikkoon suodatustoimintoa varten.
         $.getJSON("http://127.0.0.1:3002/workers", function (obj) {
                 $.each(obj, function (key, value) {
@@ -192,12 +235,12 @@
                 });
             
         });
-        
+        /*
         // Pitää projectID-muuttujaa ajan tasalla.
         $("#provalinta").change(function () {
             projectID = $("#provalinta").val();
         });
-
+        */
         // Pitää workerID-muuttujaa ajan tasalla.
         $("#tyotevalinta").change(function () {
             workerID = $("#tyotevalinta").val();
@@ -217,10 +260,10 @@
         <br>
         <button id="btnAddTime" type="button" class="btn btn-primary">Lisää suoriteaika</button>
         <br>
-        Suodata projektilla: <select id="provalinta"><option value=""></option></select>
-        Suodata työntekijällä: <select id="tyotevalinta"><option value=""></option></select>
-        <button id="suodataAjat">Suodata</button>
         <br>
+        <br>
+    <!--Suodata projektilla: <select id="provalinta"><option value=""></option></select> -->  
+        Suodata työntekijällä: <select id="tyotevalinta"><option value=""></option></select>
         Vuosi: <select id="year">
             <option value="" selected></option>
             <option value="2018">2018</option>
@@ -242,8 +285,11 @@
             <option value="11">Marraskuu</option>
             <option value="12">Joulukuu</option>
         </select>
+        <button id="suodataAjat" class="btn btn-info">Suodata</button>
 
     </div>
+    <br>
+    <table id="resultsAdvanced"></table>
     
     <div id="timedialog" title="Lisää työsuoritus" style="display:none">
 

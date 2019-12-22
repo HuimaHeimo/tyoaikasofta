@@ -170,9 +170,22 @@ module.exports =
 
           //Hakee kuukauden, vuoden ja henkilön perusteella rajatut työtunnit.
           limitTimes: function (req, res) {
-            
+
+            if (req.query.tyoteID == "" && req.query.kuukausi == "" && req.query.vuosi == "") {
+                sqlQuery = "SELECT * FROM tyoajat";
+            }
+            else if (req.query.kuukausi == "" && req.query.vuosi == "") {
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID;
+            }
+            else if (req.query.kuukausi == "") {
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND YEAR(lopetus)=" + req.query.vuosi;
+            }
+            else if (req.query.vuosi == "") {
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND MONTH(lopetus)=" + req.query.kuukausi;
+            }
+            else {
                 sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND MONTH(lopetus)=" + req.query.kuukausi + " AND YEAR(lopetus)=" + req.query.vuosi;
-            
+            }
             
             
             connection.query(sqlQuery, function (error, results, fields) {
@@ -181,8 +194,8 @@ module.exports =
                     res.send({ "status": 500, "error": error, "response": null });
                 }
                 else {
-                    /*console.log("Data = " + JSON.stringify(results));
-                    console.log("Params = " + JSON.stringify(req.query));*/
+                    console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));
 
                     res.json(results);
                 }
