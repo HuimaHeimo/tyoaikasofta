@@ -2,25 +2,26 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Työajanhallintasovellus</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
+
 </head>
 
 <script>
     $(document).ready(function () {
+
 
         // Apumuuttuja työaikojen suodatusta varten.
         var projectID = "";
         var workerID = "";
 
         fetchTimes();
+
+        $("#startingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $("#endingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
 
         /*
         $('#results').html("<tr><th>Aloitusaika</th><th>Lopetusaika</th></tr>");
@@ -41,7 +42,7 @@
             var hours = Math.abs($pvm2 - $pvm1) / 36e5;
             return hours;
         }
-        // 2019-12-14T14:00:00.000Z malli, poista lopuksi
+
         // Hakee tietokannasta tunnit tauluun
         function fetchTimes() {
             $("#tresults").empty();
@@ -144,7 +145,7 @@
         // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
         $(document).on("click", "a.deleteTime", function (e) {
             e.preventDefault();
-            id = $(this).parent().prev().prev().prev().prev().text();
+            id = $(this).parent().prev().prev().prev().prev().text(); // HUOM! poisto kiikastaa tästä
             $.ajax({
                 url: 'http://localhost:3002/times',
                 method: 'DELETE',
@@ -163,7 +164,7 @@
             $("#endingDatepicker").empty();
             getWorkers();
             getProjects();
-            setTimeout(() => { $("#timedialog").dialog(); }, 1000);
+            setTimeout(() => { $("#timedialog").dialog(); }, 500);
         })
 
         // Hakee lisäys-dialogiin työntekijät kannasta
@@ -237,16 +238,7 @@
         $("#tyotevalinta").change(function () {
             workerID = $("#tyotevalinta").val();
         });
-
-        $("#startingDatepicker").datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-
-        $("#endingDatepicker").datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-
-
+        
     })
 </script>
 
@@ -322,6 +314,7 @@
 
 
     </div>
+
 </body>
 
 </html>
