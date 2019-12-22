@@ -143,11 +143,56 @@ module.exports =
                 && req.query.lopetus == undefined) {
                     sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
                 }
-            else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "" && req.query.aloitus == ""
-            && req.query.lopetus == "") {
+            else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "") {
                 sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
             }
+            else if (req.query.tyoteID != "" && req.query.proID == "" || req.query.proID == undefined && req.query.tyoteID != undefined) {
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID='" + req.query.tyoteID + "'";
+            }
            
+            else if (req.query.tyoteID != "" && req.query.proID != "" && req.query.proID != undefined && req.query.tyoteID != undefined) {
+                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "' AND tyoteID='" + req.query.tyoteID + "'";
+            }
+            
+            connection.query(sqlQuery, function (error, results, fields) {
+                if (error) {
+                    console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
+                    res.send({ "status": 500, "error": error, "response": null });
+                }
+                else {
+                    /*console.log("Data = " + JSON.stringify(results));
+                    console.log("Params = " + JSON.stringify(req.query));*/
+
+                    res.json(results);
+                }
+            });
+        },
+
+          //Hakee kuukauden, vuoden ja henkilön perusteella rajatut työtunnit.
+          limitTimes: function (req, res) {
+            if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID == "" && req.query.aloitus == ""
+            && req.query.lopetus == "") {
+                sqlQuery = "SELECT * FROM tyoajat";
+            }
+            else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID == undefined && req.query.aloitus == undefined
+            && req.query.lopetus == undefined) {
+                sqlQuery = "SELECT * FROM tyoajat";
+            }
+            else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID != undefined && req.query.aloitus == undefined
+                && req.query.lopetus == undefined) {
+                    sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
+                }
+            else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "") {
+                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
+            }
+            else if (req.query.tyoteID != "" && req.query.proID == "" || req.query.proID == undefined && req.query.tyoteID != undefined) {
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID='" + req.query.tyoteID + "'";
+            }
+           
+            else if (req.query.tyoteID != "" && req.query.proID != "" && req.query.proID != undefined && req.query.tyoteID != undefined) {
+                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "' AND tyoteID='" + req.query.tyoteID + "'";
+            }
+            
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
                     console.log("Virhe haettaessa dataa tyoajat-taulusta, syy: " + error);
