@@ -170,28 +170,10 @@ module.exports =
 
           //Hakee kuukauden, vuoden ja henkilön perusteella rajatut työtunnit.
           limitTimes: function (req, res) {
-            if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID == "" && req.query.aloitus == ""
-            && req.query.lopetus == "") {
-                sqlQuery = "SELECT * FROM tyoajat";
-            }
-            else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID == undefined && req.query.aloitus == undefined
-            && req.query.lopetus == undefined) {
-                sqlQuery = "SELECT * FROM tyoajat";
-            }
-            else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID != undefined && req.query.aloitus == undefined
-                && req.query.lopetus == undefined) {
-                    sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
-                }
-            else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "") {
-                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
-            }
-            else if (req.query.tyoteID != "" && req.query.proID == "" || req.query.proID == undefined && req.query.tyoteID != undefined) {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID='" + req.query.tyoteID + "'";
-            }
-           
-            else if (req.query.tyoteID != "" && req.query.proID != "" && req.query.proID != undefined && req.query.tyoteID != undefined) {
-                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "' AND tyoteID='" + req.query.tyoteID + "'";
-            }
+            
+                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND MONTH(lopetus)=" + req.query.kuukausi + " AND YEAR(lopetus)=" + req.query.vuosi;
+            
+            
             
             connection.query(sqlQuery, function (error, results, fields) {
                 if (error) {
