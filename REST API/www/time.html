@@ -16,20 +16,6 @@
 <script>
     $(document).ready(function () {
 
-        /* Initialise the date picker */
-        if (!$.datepicker.initialized) {
-            $(document).mousedown($.datepicker._checkExternalClick);
-            $.datepicker.initialized = true;
-        }
-
-        $("#startingDatepicker").datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-
-        $("#endingDatepicker").datepicker({
-            dateFormat: "yy-mm-dd"
-        });
-
         // Apumuuttuja työaikojen suodatusta varten.
         var projectID = "";
         var workerID = "";
@@ -69,8 +55,8 @@
                             $("#tresults").append(
                                 "<tr>" +
                                 "<td>" + data[i].pronimi + "</td>" +
-                                "<td>" + data[i].aloitus + "</td>" +
-                                "<td>" + data[i].lopetus + "</td>" +
+                                "<td>" + data[i].aloitus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
+                                "<td>" + data[i].lopetus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
                                 "<td>" + hours + "</td>" +
                                 "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
                                 "</tr>"
@@ -98,8 +84,8 @@
                         $("#tresults").append(
                             "<tr>" +
                             "<td>" + data[i].pronimi + "</td>" +
-                            "<td>" + data[i].aloitus + "</td>" +
-                            "<td>" + data[i].lopetus + "</td>" +
+                            "<td>" + data[i].aloitus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
+                            "<td>" + data[i].lopetus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
                             "<td>" + hours + "</td>" +
                             "<td>" + "<a href='javascript:void(0);' class='deleteTime'>Poista</a>" + "</td>" +
                             "</tr>"
@@ -250,6 +236,14 @@
         // Pitää workerID-muuttujaa ajan tasalla.
         $("#tyotevalinta").change(function () {
             workerID = $("#tyotevalinta").val();
+        });
+
+        $("#startingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
+        });
+
+        $("#endingDatepicker").datepicker({
+            dateFormat: "yy-mm-dd"
         });
 
 
