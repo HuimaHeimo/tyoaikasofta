@@ -169,3 +169,9 @@ body {
     background-color: rgb(63, 137, 223);
     color: white;
   }
+
+  #timeNotify {
+    text-align: center;
+    color: tomato;
+    font-weight: bold;
+  }
