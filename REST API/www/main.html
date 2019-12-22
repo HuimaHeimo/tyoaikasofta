@@ -26,8 +26,8 @@
                 "<tr>" +
                 "<td>" + data[i].pronimi + "</td>" +
                 "<td>" + data[i].tyotenimi + "</td>" +
-                "<td>" + data[i].aloitus + "</td>" +
-                "<td>" + data[i].lopetus + "</td>" +
+                "<td>" + data[i].aloitus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
+                "<td>" + data[i].lopetus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
                 "</tr>"         
                 )        
             }
