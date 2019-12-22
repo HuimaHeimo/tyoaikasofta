@@ -133,25 +133,31 @@ module.exports =
         fetchTimes: function (req, res) {
             if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID == "" && req.query.aloitus == ""
             && req.query.lopetus == "") {
-                sqlQuery = "SELECT * FROM tyoajat";
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID;";
             }
             else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID == undefined && req.query.aloitus == undefined
             && req.query.lopetus == undefined) {
-                sqlQuery = "SELECT * FROM tyoajat";
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID;";
             }
             else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID != undefined && req.query.aloitus == undefined
                 && req.query.lopetus == undefined) {
-                    sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
+                    sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                    ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.proID='" + req.query.proID + "'";
                 }
             else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "") {
-                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "'";
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID tyoajat.proID='" + req.query.proID + "'";
             }
             else if (req.query.tyoteID != "" && req.query.proID == "" || req.query.proID == undefined && req.query.tyoteID != undefined) {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID='" + req.query.tyoteID + "'";
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID='" + req.query.tyoteID + "'";
             }
            
             else if (req.query.tyoteID != "" && req.query.proID != "" && req.query.proID != undefined && req.query.tyoteID != undefined) {
-                sqlQuery = "SELECT * FROM tyoajat WHERE proID='" + req.query.proID + "' AND tyoteID='" + req.query.tyoteID + "'";
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.proID='" + req.query.proID + "' AND tyoajat.tyoteID='" + req.query.tyoteID + "'";
             }
             
             connection.query(sqlQuery, function (error, results, fields) {
@@ -170,21 +176,21 @@ module.exports =
 
           //Hakee kuukauden, vuoden ja henkilön perusteella rajatut työtunnit.
           limitTimes: function (req, res) {
-
+            
             if (req.query.tyoteID == "" && req.query.kuukausi == "" && req.query.vuosi == "") {
                 sqlQuery = "SELECT * FROM tyoajat";
             }
             else if (req.query.kuukausi == "" && req.query.vuosi == "") {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID;
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID;
             }
             else if (req.query.kuukausi == "") {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND YEAR(lopetus)=" + req.query.vuosi;
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND YEAR(tyoajat.lopetus)=" + req.query.vuosi;
             }
             else if (req.query.vuosi == "") {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND MONTH(lopetus)=" + req.query.kuukausi;
+                sqlQuery = sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND MONTH(tyoajat.lopetus)=" + req.query.kuukausi;
             }
             else {
-                sqlQuery = "SELECT * FROM tyoajat WHERE tyoteID=" + req.query.tyoteID + " AND MONTH(lopetus)=" + req.query.kuukausi + " AND YEAR(lopetus)=" + req.query.vuosi;
+                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND MONTH(tyoajat.lopetus)=" + req.query.kuukausi + " AND YEAR(tyoajat.lopetus)=" + req.query.vuosi;
             }
             
             
