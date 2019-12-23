@@ -48,7 +48,7 @@ DROP TABLE IF EXISTS `projektit`;
 
 CREATE TABLE `projektit` (
   `projektiID` INT(11) NOT NULL AUTO_INCREMENT,
-  `nimi` VARCHAR(30) NOT NULL,
+  `nimi` VARCHAR(50) NOT NULL,
   PRIMARY KEY (`projektiID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -107,7 +107,7 @@ ALTER TABLE `tyoajat`
 --
  INSERT INTO `tyoajat` (`tyoaikaID`, `tyoteID`, `proID`, `aloitus`, `lopetus`) VALUES
  (1, 2, 4, '2019-12-14 12-00-00', '2019-12-14 16-00-00'),
- (2, 1, 5, '2019-10-01 08-00-00', '2019-12-14 16-00-00'),
+ (2, 1, 5, '2019-10-01 08-00-00', '2019-10-01 16-00-00'),
  (3, 3, 3, '2019-12-14 10-00-00', '2019-12-14 16-00-00'),
  (4, 6, 7, '2019-12-14 07-00-00', '2019-12-14 12-00-00'),
  (5, 4, 2, '2019-12-14 14-00-00', '2019-12-14 20-00-00'),
