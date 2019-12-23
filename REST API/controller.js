@@ -4,8 +4,9 @@ var sqlQuery;
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-    password: 'Kissa123',
-    database: 'tyoaika'
+    password: '',
+    database: 'tyoaika',
+    timezone: 'Europe/Helsinki'
 });
 
 
