@@ -46,7 +46,7 @@
         // Hakee tietokannasta tunnit tauluun
         function fetchTimes() {
             $("#tresults").empty();
-            $('#tresults').html("<tr><th>Projekti</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
+            $('#tresults').html("<tr><th>ID</th><th>Projekti</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
             $.getJSON("http://127.0.0.1:3002/times", function (data) {
                         var len = data.length;
                         for (var i = 0; i < len; i++) {
@@ -55,6 +55,7 @@
                             var hours = calculateHours($pvm1, $pvm2);
                             $("#tresults").append(
                                 "<tr>" +
+                                "<td>" + data[i].id + "</td>" +
                                 "<td>" + data[i].pronimi + "</td>" +
                                 "<td>" + data[i].aloitus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
                                 "<td>" + data[i].lopetus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
@@ -73,7 +74,7 @@
             $("#timeNotify").html("")
             if ($("#tyotevalinta").val() != "") {
                 $("#tresults").empty();
-                $('#tresults').html("<tr><th>Projekti</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
+                $('#tresults').html("<tr><th>ID</th><th>Projekti</th><th>Aloitusaika</th><th>Lopetusaika</th><th>Tunnit</th><th> </th></tr>");
                 $.getJSON("http://127.0.0.1:3002/hours/limit?tyoteID=" + workerID + "&kuukausi=" + $("#month").val() + "&vuosi=" + $("#year").val(), function (data) {
                     var len = data.length;
                     var hourscount = 0;
@@ -84,6 +85,7 @@
                         hourscount = hourscount + hours;
                         $("#tresults").append(
                             "<tr>" +
+                            "<td>" + data[i].id + "</td>" +
                             "<td>" + data[i].pronimi + "</td>" +
                             "<td>" + data[i].aloitus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
                             "<td>" + data[i].lopetus.replace(/\T/g, ' ').replace(/\:00.000Z/g, '') + "</td>" +
@@ -145,7 +147,7 @@
         // Click event taulukon muokkauspainikkeille. Vie myös valitun henkilön id:n apumuutujaan.
         $(document).on("click", "a.deleteTime", function (e) {
             e.preventDefault();
-            id = $(this).parent().prev().prev().prev().prev().text(); // HUOM! poisto kiikastaa tästä
+            id = $(this).parent().prev().prev().prev().prev().prev().text(); // HUOM! poisto kiikastaa tästä
             $.ajax({
                 url: 'http://localhost:3002/times',
                 method: 'DELETE',

@@ -4,7 +4,7 @@ var sqlQuery;
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',  // HUOM! Älä käytä root:n tunnusta tuotantokoneella!!!!
-    password: '',
+    password: 'Kissa123',
     database: 'tyoaika'
 });
 
@@ -133,30 +133,30 @@ module.exports =
         fetchTimes: function (req, res) {
             if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID == "" && req.query.aloitus == ""
             && req.query.lopetus == "") {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id,projektit.nimi AS pronimi, tyoajat.aloitus" + 
                 ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID;";
             }
             else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID == undefined && req.query.aloitus == undefined
             && req.query.lopetus == undefined) {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus" + 
                 ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID;";
             }
             else if (req.query.tyoaikaID == undefined && req.query.tyoteID == undefined && req.query.proID != undefined && req.query.aloitus == undefined
                 && req.query.lopetus == undefined) {
-                    sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                    sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus" + 
                     ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.proID='" + req.query.proID + "'";
                 }
             else if (req.query.tyoaikaID == "" && req.query.tyoteID == "" && req.query.proID != "") {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus" + 
                 ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID tyoajat.proID='" + req.query.proID + "'";
             }
             else if (req.query.tyoteID != "" && req.query.proID == "" || req.query.proID == undefined && req.query.tyoteID != undefined) {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus" + 
                 ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID='" + req.query.tyoteID + "'";
             }
            
             else if (req.query.tyoteID != "" && req.query.proID != "" && req.query.proID != undefined && req.query.tyoteID != undefined) {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus" + 
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus" + 
                 ", tyoajat.lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.proID='" + req.query.proID + "' AND tyoajat.tyoteID='" + req.query.tyoteID + "'";
             }
             
@@ -181,16 +181,16 @@ module.exports =
                 sqlQuery = "SELECT * FROM tyoajat";
             }
             else if (req.query.kuukausi == "" && req.query.vuosi == "") {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID;
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID;
             }
             else if (req.query.kuukausi == "") {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND YEAR(tyoajat.lopetus)=" + req.query.vuosi;
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND YEAR(tyoajat.lopetus)=" + req.query.vuosi;
             }
             else if (req.query.vuosi == "") {
-                sqlQuery = sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND MONTH(tyoajat.lopetus)=" + req.query.kuukausi;
+                sqlQuery = sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND MONTH(tyoajat.lopetus)=" + req.query.kuukausi;
             }
             else {
-                sqlQuery = "SELECT projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND MONTH(tyoajat.lopetus)=" + req.query.kuukausi + " AND YEAR(tyoajat.lopetus)=" + req.query.vuosi;
+                sqlQuery = "SELECT tyoajat.tyoaikaID AS id, projektit.nimi AS pronimi, tyoajat.aloitus, tyoajat.lopetus AS lopetus FROM tyoajat INNER JOIN projektit ON tyoajat.proID = projektit.projektiID WHERE tyoajat.tyoteID=" + req.query.tyoteID + " AND MONTH(tyoajat.lopetus)=" + req.query.kuukausi + " AND YEAR(tyoajat.lopetus)=" + req.query.vuosi;
             }
             
             
