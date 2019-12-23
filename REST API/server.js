@@ -55,10 +55,6 @@ app.route('/projects')
 
 app.route('/project/muokkaa')
     .post(controller.updateProject);
-
-
-app.route('/login')
-    .post(controller.login);
    
 app.route('/hours')
     .get(controller.fetchHours);
@@ -86,19 +82,6 @@ app.route('/Asiakas/:id')
 app.route('/all')
     .get(controller.fetchAll);
 
-app.get('/getuser', (req, res) => {
-    console.log(req.cookies);
-    res.send(req.cookies)
-});
-
-app.get('/logout', (req, res) => {
-    res.clearCookie("userData");
-    res.send("Olet kirjautunut ulos")
-});
-
-app.get('/userdata', function (request, response) {
-    response.send(request.cookies);
-});
 
 
 
@@ -123,17 +106,6 @@ app.get('/', function (request, response) {
     
 });
 
-app.get('/login', function (request, response, req) {
-    if (request.cookies.userData == null) {
-        fs.readFile("login.html", function (err, data) {
-            response.writeHead(200, { 'Content-Type': 'text/html' });
-            response.write(data);
-            response.end();
-        });
-    }
-    response.cookie("userData", users);
-
-});
 
 app.listen(port, hostname, () => {
     console.log(`Server running AT http://${hostname}:${port}/`);

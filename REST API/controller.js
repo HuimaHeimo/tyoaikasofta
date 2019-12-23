@@ -8,11 +8,6 @@ var connection = mysql.createConnection({
     database: 'tyoaika'
 });
 
-let users = {
-    userName: "Testi",
-    loginTime: Date.now(),
-    sessionId: 1234
-};
 
 module.exports =
     {
@@ -96,12 +91,6 @@ module.exports =
                 }
             });
 
-    },
-
-    login: function (request, response) {
-        users.userName = request.body.username;
-        response.cookie("userData", users);
-        response.redirect("/");
     },
 
         //Hakee kaikki työntekijät, tai jos tulee parametreja, haetaan niiden perusteella
